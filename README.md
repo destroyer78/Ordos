@@ -3,7 +3,7 @@ Ordos: Comtrade Manager para cumplimiento del Sistema de Lectura Remota de Prote
 
 ## Instrucciones
 
-1. Descargar e instalar [.Net Core](https://www.microsoft.com/net/download/all)
+1. Descargar e instalar [.Net Core](https://www.microsoft.com/net/download)
 
 2. [Clonar](https://help.github.com/articles/cloning-a-repository/) o [descargar](https://stackoverflow.com/a/6466993) el repositorio.
 
