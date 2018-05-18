@@ -10,3 +10,6 @@ Ordos: Comtrade Manager para cumplimiento del Sistema de Lectura Remota de Prote
 3. Entrar a la carpeta 'Ordos.Server'
 
 4. Ejecutar 'dotnet run'
+
+## Contribuciones
+La herramienta está en versión beta. Cualquier duda o comentario, favor subirlo a un Issue
