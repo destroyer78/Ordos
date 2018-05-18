@@ -18,7 +18,7 @@ namespace Ordos.Core.Models
         public int DeviceId { get; set; }
         public Device Device { get; set; }
 
-        [Display(Name = "IED DR Files")]
+        [Display(Name = "Archivos Comtrade")]
         public ICollection<DRFile> DRFiles { get; set; }
 
         [Required]

@@ -24,7 +24,7 @@ namespace DRM.Pages_Devices
 
         public IActionResult OnGet()
         {
-        ViewData["DeviceTypeId"] = new SelectList(_context.DeviceTypes, "Id", "DeviceTypeName");
+        //ViewData["DeviceTypeId"] = new SelectList(_context.DeviceTypes, "Id", "DeviceTypeName");
             return Page();
         }
 

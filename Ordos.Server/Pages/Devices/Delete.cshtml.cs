@@ -33,7 +33,8 @@ namespace DRM.Pages_Devices
             }
 
             Device = await _context.Devices
-                .Include(d => d.DeviceType).FirstOrDefaultAsync(m => m.Id == id);
+                //.Include(d => d.DeviceType)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (Device == null)
             {

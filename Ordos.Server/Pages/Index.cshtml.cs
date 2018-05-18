@@ -20,7 +20,10 @@ namespace Ordos.Server.Pages
 
         public async Task OnGetAsync()
         {
-            Device = await _context.Devices.Include(d => d.DeviceType).ToListAsync();
+            Device = await _context.Devices
+                //.Include(d => d.DeviceType)
+                .ToListAsync();
+
             Records = await _context.DisturbanceRecordings.ToListAsync();
         }
     }

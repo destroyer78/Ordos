@@ -24,7 +24,8 @@ namespace DRM.Pages_Devices
         public async Task OnGetAsync()
         {
             Device = await _context.Devices
-                .Include(d => d.DeviceType).ToListAsync();
+                //.Include(d => d.DeviceType)
+                .ToListAsync();
         }
     }
 }

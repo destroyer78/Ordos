@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - DR Manager</title>
+    <title>@ViewData["Title"] - Ordos: Comtrade Manager</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -26,13 +26,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-page="/Index" class="navbar-brand">DR Manager</a>
+                <a asp-page="/Index" class="navbar-brand">ORDOS</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-page="/Devices/Index">Devices</a></li>
-                    <li><a asp-page="/Records/Index">Records</a></li>
-                    <li><a asp-page="/Settings/Index">Settings</a></li>
+                    <li><a asp-page="/Devices/Index">IEDs</a></li>
+                    <li><a asp-page="/Records/Index">Oscilografías</a></li>
+                    <li><a asp-page="/Settings/Index">Ajustes</a></li>
                 </ul>
             </div>
         </div>
@@ -41,7 +41,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2018 - DR Manager</p>
+            <p>&copy; 2018 - Ordos: Comtrade Manager</p>
         </footer>
     </div>
 

@@ -11,7 +11,7 @@ namespace Ordos.IEDService.Services
 {
     public static class PathService
     {
-        private static string DRMFolder => @"DRM";
+        private static string DRMFolder => @"Ordos";
 
         internal static string ExportRoot
         {

@@ -30,7 +30,7 @@ namespace DRM.Pages_Devices
 
             Device = await _context.Devices
                                    .Include(x=>x.DisturbanceRecordings).AsNoTracking()
-                                   .Include(d => d.DeviceType)
+                                   //.Include(d => d.DeviceType)
                                    .FirstOrDefaultAsync(m => m.Id == id);
 
             if (Device == null)

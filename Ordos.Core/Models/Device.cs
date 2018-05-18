@@ -17,36 +17,36 @@ namespace Ordos.Core.Models
         [Key]
         public int Id { get; set; }
 
-        public int DeviceTypeId { get; set; }
+        //public int DeviceTypeId { get; set; }
 
-        [Display(Name = "Device Type")]
-        public DeviceType DeviceType { get; set; }
+        [Display(Name = "Tipo de IED")]
+        public string DeviceType { get; set; }
 
         /// <summary>
         /// List of all the DRs that the IED have.
         /// Each DR can contain multiple IEDFiles.
         /// </summary>
-        [Display(Name = "Disturbance Recordings")]
+        [Display(Name = "Oscilografias")]
         public ICollection<DisturbanceRecording> DisturbanceRecordings { get; set; }
 
         [Required]
-        [Display(Name = "Device Name")]
+        [Display(Name = "Dispositivo")]
         public string Name { get; set; }
 
         [Required]
         [IPAddressCheck]
-        [Display(Name = "IP Address")]
+        [Display(Name = "Dirección IP")]
         public string IPAddress { get; set; }
 
         [Required]
-        [Display(Name = "Station Name")]
+        [Display(Name = "Estación")]
         public string Station { get; set; }
 
         [Required]
-        [Display(Name = "Bay Name")]
+        [Display(Name = "Bahía")]
         public string Bay { get; set; }
 
-        [Display(Name = "Status")]
+        [Display(Name = "Estado")]
         public bool IsConnected { get; set; }
 
         [Display(Name = "Ping")]

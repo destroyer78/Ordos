@@ -1,11 +1,11 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Dashboard";
 }
 
 <div class="jumbotron">
-    @*<h1>Sistema de Lectura Remota de Protecciones</h1>*@
+    <h1>Ordos: Comtrade Manager</h1>
 </div>
 
 <h2>Devices</h2>
@@ -13,26 +13,29 @@
 <table class="table">
     <thead>
         <tr>
-            <th></th>
             <th>
-                @Html.DisplayNameFor(model => model.Device[0].Station)
+                @Html.DisplayNameFor(model => model.Device[0].HasPing)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Device[0].Bay)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Device[0].Name)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Device)
-        {
+        <th>
+            @Html.DisplayNameFor(model => model.Device[0].Station)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Device[0].Bay)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Device[0].Name)
+        </th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var item in Model.Device)
+    {
         <tr>
             <td>
-                <svg viewBox="0 0 2 2">
-                    <circle cx="1" cy="0.8" r="0.5" stroke-width="0" fill="@(item.IsConnected ? "SpringGreen " : "red")"/>
-                </svg>
+                @(item.IsConnected ? "OK " : "Not Ok")
+                @*<svg viewBox="0 0 2 2">
+                    <circle cx="1" cy="0.3" r="0.1" stroke-width="0" fill="@(item.IsConnected ? "SpringGreen " : "red")" />
+                </svg>*@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Station)
@@ -44,8 +47,8 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
         </tr>
-        }
-    </tbody>
+    }
+</tbody>
 </table>
 
 <h2>Recordings</h2>
