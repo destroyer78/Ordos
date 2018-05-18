@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordos.Server.Client", "Ordo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordos.Server.Shared", "Ordos.Server.Shared\Ordos.Server.Shared.csproj", "{47BF194F-1D61-4937-A34D-2D9B20046F6E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordos.Core", "Ordos.Core\Ordos.Core.csproj", "{BC32E707-6680-4B14-800B-0B49D21C6F40}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{47BF194F-1D61-4937-A34D-2D9B20046F6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47BF194F-1D61-4937-A34D-2D9B20046F6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47BF194F-1D61-4937-A34D-2D9B20046F6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC32E707-6680-4B14-800B-0B49D21C6F40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC32E707-6680-4B14-800B-0B49D21C6F40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC32E707-6680-4B14-800B-0B49D21C6F40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC32E707-6680-4B14-800B-0B49D21C6F40}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
