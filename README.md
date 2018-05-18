@@ -15,5 +15,7 @@ Ordos: Comtrade Manager para cumplimiento del Sistema de Lectura Remota de Prote
 
 6. Ejecutar `dotnet run`
 
+Las oscilografías se extraen a la carpeta `C:\Ordos\` según los requerimientos del SLRP.
+
 ## Contribuciones
 La herramienta está en versión beta. Cualquier duda o comentario, favor subirlo a un Issue
