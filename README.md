@@ -7,9 +7,13 @@ Ordos: Comtrade Manager para cumplimiento del Sistema de Lectura Remota de Prote
 
 2. Clonar el repositorio
 
-3. Entrar a la carpeta 'Ordos.Server'
+3. Entrar a la carpeta `Ordos`
 
-4. Ejecutar 'dotnet run'
+4. Ejecutar `dotnet build`
+
+5. Entrar a la carpeta `Ordos.Server`
+
+6. Ejecutar `dotnet run`
 
 ## Contribuciones
 La herramienta está en versión beta. Cualquier duda o comentario, favor subirlo a un Issue
