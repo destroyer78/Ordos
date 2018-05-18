@@ -1,0 +1,84 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="jumbotron">
+    @*<h1>Sistema de Lectura Remota de Protecciones</h1>*@
+</div>
+
+<h2>Devices</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Device[0].Station)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Device[0].Bay)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Device[0].Name)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Device)
+        {
+        <tr>
+            <td>
+                <svg viewBox="0 0 2 2">
+                    <circle cx="1" cy="0.8" r="0.5" stroke-width="0" fill="@(item.IsConnected ? "SpringGreen " : "red")"/>
+                </svg>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Station)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Bay)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Recordings</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Records[0].Device.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Records[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Records[0].TriggerTime)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Records)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Device.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TriggerTime)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

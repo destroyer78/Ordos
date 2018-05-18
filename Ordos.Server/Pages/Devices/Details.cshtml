@@ -1,0 +1,71 @@
+@page "{id:int?}"
+@model DRM.Pages_Devices.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details: @Html.DisplayFor(model => model.Device.FullName)</h2>
+
+<div>
+    <h4>Device</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Device.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Device.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Device.IPAddress)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Device.IPAddress)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Device.Station)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Device.Station)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Device.Bay)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Device.Bay)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Device.DeviceType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Device.DeviceType.DeviceTypeName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Device.DisturbanceRecordings)
+        </dt>
+        <dd>
+            <table class="table">
+                <tr>
+                    <th>Record Name</th>
+                    <th>Record Date</th>
+                </tr>
+                @foreach (var item in Model.Device.DisturbanceRecordings)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TriggerTime)
+                        </td>
+                    </tr>
+                }
+            </table>
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Device.Id">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

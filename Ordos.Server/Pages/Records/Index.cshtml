@@ -1,0 +1,40 @@
+@page
+@model DRM.Pages_Records.IndexModel
+
+@{
+    ViewData["Title"] = "Recordings";
+}
+
+<h2>Index</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Records[0].Device.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Records[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Records[0].TriggerTime)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Records)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Device.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TriggerTime)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

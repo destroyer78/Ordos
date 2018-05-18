@@ -1,0 +1,61 @@
+@page
+@model DRM.Pages_Devices.IndexModel
+
+@{
+    ViewData["Title"] = "Devices";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Device[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Device[0].IPAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Device[0].Station)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Device[0].Bay)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Device[0].DeviceType)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Device)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IPAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Station)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Bay)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.DeviceType.DeviceTypeName)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
