@@ -33,9 +33,6 @@
         <tr>
             <td>
                 @(item.IsConnected ? "OK " : "Not Ok")
-                @*<svg viewBox="0 0 2 2">
-                    <circle cx="1" cy="0.3" r="0.1" stroke-width="0" fill="@(item.IsConnected ? "SpringGreen " : "red")" />
-                </svg>*@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Station)

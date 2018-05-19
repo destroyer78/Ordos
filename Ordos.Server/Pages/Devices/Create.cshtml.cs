@@ -14,17 +14,14 @@ namespace DRM.Pages_Devices
     public class CreateModel : PageModel
     {
         private readonly SystemContext _context;
-        //private Scheduler scheduler;
 
         public CreateModel(SystemContext context)
         {
             _context = context;
-            //scheduler = new Scheduler(context);
         }
 
         public IActionResult OnGet()
         {
-        //ViewData["DeviceTypeId"] = new SelectList(_context.DeviceTypes, "Id", "DeviceTypeName");
             return Page();
         }
 

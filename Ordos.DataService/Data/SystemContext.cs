@@ -15,7 +15,6 @@ namespace Ordos.DataService.Data
 
         public DbSet<Device> Devices { get; set; }
         public DbSet<DisturbanceRecording> DisturbanceRecordings { get; set; }
-        //public DbSet<DeviceType> DeviceTypes { get; set; }
         public DbSet<DRFile> DRFiles { get; set; }
         public DbSet<ConfigurationValue> ConfigurationValues { get; set; }
 

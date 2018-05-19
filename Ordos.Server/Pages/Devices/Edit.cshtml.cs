@@ -34,15 +34,12 @@ namespace DRM.Pages_Devices
             }
 
             Device = await _context.Devices
-                //.Include(d => d.DeviceType)
-                //.AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (Device == null)
             {
                 return NotFound();
             }
-           //ViewData["DeviceTypeId"] = new SelectList(_context.DeviceTypes, "Id", "DeviceTypeName");
             return Page();
         }
 

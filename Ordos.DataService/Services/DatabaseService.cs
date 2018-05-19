@@ -24,7 +24,6 @@ namespace Ordos.DataService.Services
             using (var context = new SystemContext())
             {
                 Devices = context.Devices
-                                 //.Include(d => d.DeviceType).AsNoTracking()
                                  .Include(d => d.DisturbanceRecordings).AsNoTracking()
                                  .ToList();
             }

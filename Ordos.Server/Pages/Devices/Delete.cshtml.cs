@@ -14,12 +14,10 @@ namespace DRM.Pages_Devices
     public class DeleteModel : PageModel
     {
         private readonly SystemContext _context;
-        //private Scheduler scheduler;
 
         public DeleteModel(SystemContext context)
         {
             _context = context;
-            //scheduler = new Scheduler(context);
         }
 
         [BindProperty]
@@ -33,7 +31,6 @@ namespace DRM.Pages_Devices
             }
 
             Device = await _context.Devices
-                //.Include(d => d.DeviceType)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (Device == null)
