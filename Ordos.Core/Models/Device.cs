@@ -1,9 +1,7 @@
-﻿using System;
-using Ordos.Core.Utilities;
+﻿using Ordos.Core.Utilities;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 
 namespace Ordos.Core.Models
 {

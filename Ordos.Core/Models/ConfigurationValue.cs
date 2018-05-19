@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Ordos.Core.Models
+﻿namespace Ordos.Core.Models
 {
     public class ConfigurationValue
     {
