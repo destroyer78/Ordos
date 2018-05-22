@@ -9,7 +9,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IEC61850.NetCore\IEC61850.NetCore.csproj" />
+    <ProjectReference Include="..\IEC61850.NetCore\IEC61850.NetCore.csproj">
+      <Private>true</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Ordos.Core\Ordos.Core.csproj" />
     <ProjectReference Include="..\Ordos.DataService\Ordos.DataService.csproj" />
   </ItemGroup>
