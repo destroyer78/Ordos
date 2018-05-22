@@ -3,9 +3,9 @@ Ordos: Comtrade Manager para cumplimiento del Sistema de Lectura Remota de Prote
 
 ## Instrucciones
 
-1. Descargar e instalar [.Net Core](https://www.microsoft.com/net/download)
+1. Descargar e instalar [.Net Core](https://www.microsoft.com/net/download) (x86 o x64).
 
-2. Instalar [SQL Server Express 2016 - LocalDb](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-2016-express-localdb) 
+2. Instalar [SQL Server Express 2014 - LocalDb](https://www.microsoft.com/en-us/download/details.aspx?id=42299) (x86 o x64)
 
 3. [Clonar](https://help.github.com/articles/cloning-a-repository/) o [descargar](https://stackoverflow.com/a/6466993) el repositorio.
 
