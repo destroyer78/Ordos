@@ -5,15 +5,17 @@ Ordos: Comtrade Manager para cumplimiento del Sistema de Lectura Remota de Prote
 
 1. Descargar e instalar [.Net Core](https://www.microsoft.com/net/download)
 
-2. [Clonar](https://help.github.com/articles/cloning-a-repository/) o [descargar](https://stackoverflow.com/a/6466993) el repositorio.
+2. Instalar [SQL Server Express 2016 - LocalDb](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-2016-express-localdb) 
 
-3. Entrar a la carpeta `Ordos` (en la consola: `cd Ordos`)
+3. [Clonar](https://help.github.com/articles/cloning-a-repository/) o [descargar](https://stackoverflow.com/a/6466993) el repositorio.
 
-4. En la consola, ejecutar `dotnet build`
+4. Entrar a la carpeta `Ordos` (en la consola: `cd Ordos`)
 
-5. Entrar a la carpeta `Ordos.Server` (`cd Ordos.Server`)
+5. En la consola, ejecutar `dotnet build`
 
-6. En la consola, ejecutar `dotnet run`
+6. Entrar a la carpeta `Ordos.Server` (`cd Ordos.Server`)
+
+7. En la consola, ejecutar `dotnet run`
 
 Las oscilografías se extraen a la carpeta `C:\Ordos\` según los requerimientos del SLRP.
 
