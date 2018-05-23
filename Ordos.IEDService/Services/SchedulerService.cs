@@ -10,7 +10,7 @@ namespace Ordos.IEDService.Services
         public static void ScheduleCollect(Action collectMethod)
         {
             registry = new Registry();
-            registry.Schedule(collectMethod).NonReentrant().ToRunNow().AndEvery(30).Seconds();
+            registry.Schedule(collectMethod).NonReentrant().ToRunNow().AndEvery(60).Seconds();
             JobManager.Initialize(registry);
         }        
     }
