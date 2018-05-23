@@ -13,23 +13,21 @@ Ordos: Comtrade Manager para cumplimiento del Sistema de Lectura Remota de Prote
 
 ![SQL Download Step 2](Assets/Images//SQL2.PNG)
 
-3. Instalar [Microsoft Visual C++ 2015 Redistributable](https://www.microsoft.com/en-US/download/details.aspx?id=52685)
-
-4. [Clonar](https://help.github.com/articles/cloning-a-repository/) o [descargar](https://stackoverflow.com/a/6466993) el repositorio.
+3. [Clonar](https://help.github.com/articles/cloning-a-repository/) o [descargar](https://stackoverflow.com/a/6466993) el repositorio.
 
 ![Repo Step 1](Assets/Images//Github1.PNG)
 
-5. Entrar a la carpeta `Ordos` (en la consola: `cd Ordos`)
+4. Entrar a la carpeta `Ordos` (en la consola: `cd Ordos`)
 
-6. En la consola, ejecutar `dotnet build`
+5. En la consola, ejecutar `dotnet build`
 
 ![Build progress](Assets/Images/Build1.PNG)
-7. Entrar a la carpeta `Ordos.Server` (`cd Ordos.Server`)
+6. Entrar a la carpeta `Ordos.Server` (`cd Ordos.Server`)
 
-8. En la consola, ejecutar `dotnet run`
+7. En la consola, ejecutar `dotnet run`
 ![Run messages](Assets/Images/Run1.PNG)
 
-9. Abrir un navegador con la ruta [http://localhost:51084](http://localhost:51084)
+8. Abrir un navegador con la ruta [http://localhost:51084](http://localhost:51084)
 
 Las oscilografías se extraen a la carpeta `C:\Ordos\` según los requerimientos del SLRP.
 
