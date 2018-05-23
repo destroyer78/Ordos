@@ -23,7 +23,7 @@ namespace Ordos.IEDService.Services
             try
             {
                 con.Connect(device.IPAddress);
-                con.Abort();
+                con.Release();
                 isConnected = true;
             }
             catch (IedConnectionException)
