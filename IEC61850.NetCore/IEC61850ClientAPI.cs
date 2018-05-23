@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Collections;
 
 using IEC61850.Common;
+using IEC61850.TLS;
 
 /// <summary>
 /// IEC 61850 API for the libiec61850 .NET wrapper library
@@ -276,6 +277,9 @@ namespace IEC61850
 			[DllImport ("iec61850", CallingConvention=CallingConvention.Cdecl)]
 			static extern IntPtr IedConnection_create ();
 
+			[DllImport ("iec61850", CallingConvention=CallingConvention.Cdecl)]
+			static extern IntPtr IedConnection_createWithTlsSupport (IntPtr tlsConfig);
+
             [DllImport ("iec61850", CallingConvention=CallingConvention.Cdecl)]
             static extern void IedConnection_destroy (IntPtr self);
 
@@ -313,7 +317,7 @@ namespace IEC61850
 			static extern IntPtr IedConnection_getLogicalNodeDirectory (IntPtr self, out int error, string logicalNodeReference, int acsiClass);
         
 			[DllImport ("iec61850", CallingConvention=CallingConvention.Cdecl)]
-			static extern IntPtr IedConnection_getServerDirectory (IntPtr self, out int error, bool getFileNames);
+			static extern IntPtr IedConnection_getServerDirectory (IntPtr self, out int error, [MarshalAs(UnmanagedType.I1)] bool getFileNames);
 
             [DllImport("iec61850", CallingConvention = CallingConvention.Cdecl)]
             static extern void IedConnection_getDeviceModelFromServer(IntPtr self, out int error);
@@ -342,6 +346,7 @@ namespace IEC61850
 			static extern IntPtr IedConnection_createDataSet (IntPtr self, out int error, [MarshalAs(UnmanagedType.LPStr)] string dataSetReference, IntPtr dataSet);
 
 			[DllImport("iec61850", CallingConvention = CallingConvention.Cdecl)]
+			[return: MarshalAs(UnmanagedType.Bool)]
 			static extern bool IedConnection_deleteDataSet (IntPtr self, out int error, string dataSetReference);
 
 			[DllImport("iec61850", CallingConvention = CallingConvention.Cdecl)]
@@ -361,11 +366,25 @@ namespace IEC61850
 
 			[DllImport("iec61850", CallingConvention = CallingConvention.Cdecl)]
 			static extern IntPtr IedConnection_queryLogAfter(IntPtr self, out int error, string logReference,
-				IntPtr entryID, ulong timeStamp, out bool moreFollows);
+				IntPtr entryID, ulong timeStamp, [MarshalAs(UnmanagedType.I1)] out bool moreFollows);
 
 			[DllImport("iec61850", CallingConvention = CallingConvention.Cdecl)]
 			static extern IntPtr IedConnection_queryLogByTime (IntPtr self, out int error, string logReference,
-                  ulong startTime, ulong endTime, out bool moreFollows);
+				ulong startTime, ulong endTime, [MarshalAs(UnmanagedType.I1)] out bool moreFollows);
+
+
+			[DllImport("iec61850", CallingConvention = CallingConvention.Cdecl)]
+			static extern IntPtr IedConnection_getRCBValues (IntPtr connection, out int error, string rcbReference, IntPtr updateRcb);
+
+			[DllImport("iec61850", CallingConvention = CallingConvention.Cdecl)]
+			static extern void IedConnection_setRCBValues (IntPtr connection, out int error, IntPtr rcb, UInt32 parametersMask, [MarshalAs(UnmanagedType.I1)] bool singleRequest);
+
+			[DllImport("iec61850", CallingConvention = CallingConvention.Cdecl)]
+			static extern void IedConnection_installReportHandler (IntPtr connection, string rcbReference, string rptId, InternalReportHandler handler,
+				IntPtr handlerParameter);
+
+			[DllImport("iec61850", CallingConvention = CallingConvention.Cdecl)]
+			static extern void IedConnection_uninstallReportHandler(IntPtr connection, string rcbReference);
 
 
             /********************
@@ -405,9 +424,21 @@ namespace IEC61850
 			private InternalConnectionClosedHandler connectionClosedHandler;
 			private ConnectionClosedHandler userProvidedHandler = null;
 
+			/// <summary>
+			/// Initializes a new instance of the <see cref="IEC61850.Client.IedConnection"/> class.
+			/// </summary>
 			public IedConnection ()
 			{
 				connection = IedConnection_create ();
+			}
+
+			/// <summary>
+			/// Initializes a new instance of the <see cref="IEC61850.Client.IedConnection"/> class.
+			/// </summary>
+			/// <param name="tlsConfig">TLS configuration to use</param>
+			public IedConnection (TLSConfiguration tlsConfig)
+			{
+				connection = IedConnection_createWithTlsSupport (tlsConfig.GetNativeInstance ());
 			}
 
 			/// <summary>
@@ -420,7 +451,6 @@ namespace IEC61850
 			public void Dispose()
 			{
 				if (connection != IntPtr.Zero) {
-					cleanupRCBs ();
 
 					IedConnection_destroy (connection);
 
@@ -430,11 +460,7 @@ namespace IEC61850
 
             ~IedConnection ()
             {
-				if (connection != IntPtr.Zero) {
-					cleanupRCBs ();
-
-					IedConnection_destroy (connection);
-				}
+				Dispose ();
             }
 
             private IsoConnectionParameters isoConnectionParameters = null;
@@ -504,7 +530,7 @@ namespace IEC61850
 			/// <exception cref="IedConnectionException">This exception is thrown if there is a connection or service error.</exception>
 			public void Connect (string hostname)
 			{
-				Connect (hostname, 102);
+				Connect (hostname, -1);
 			}
 
 			/// <exception cref="IedConnectionException">This exception is thrown if there is a connection or service error</exception>
@@ -515,10 +541,28 @@ namespace IEC61850
 				return controlObject;
 			}
 
+			/// <summary>
+			/// Creates a new SampledValuesControlBlock instance.
+			/// </summary>
+			/// <description>>
+			/// This function will also read the SVCB values from the server.
+			/// </description>
+			/// <returns>The new SVCB instance</returns>
+			/// <param name="svcbObjectReference">The object reference of the SVCB</param>
+			public SampledValuesControlBlock GetSvControlBlock (string svcbObjectReference)
+			{
+				return new SampledValuesControlBlock (connection, svcbObjectReference);
+			}
 
-		
-
-
+			/// <summary>
+			/// Creates a new SampledValuesControlBlock instance.
+			/// </summary>
+			/// <returns>The new GoCB instance</returns>
+			/// <param name="gocbObjectReference">The object reference of the GoCB</param>
+			public GooseControlBlock GetGooseControlBlock (string gocbObjectReference)
+			{
+				return new GooseControlBlock (gocbObjectReference, connection);
+			}
 
 			/// <summary>
 			/// Updates the device model by quering the server.
@@ -1402,6 +1446,39 @@ namespace IEC61850
 
 				return newList;
 			}
+
+			internal void UninstallReportHandler (string objectReference)
+			{
+				if (connection != IntPtr.Zero) {
+					IedConnection_uninstallReportHandler (connection, objectReference);
+				}
+			}
+
+			internal void InstallReportHandler (string objectReference, string reportId, InternalReportHandler internalHandler)
+			{
+				if (connection != IntPtr.Zero) {
+					IedConnection_installReportHandler (connection, objectReference, reportId, internalHandler, IntPtr.Zero);
+				}
+			}
+
+			internal void GetRCBValues(out int error, string objectReference, IntPtr updateRcb)
+			{
+				if (connection != IntPtr.Zero) {
+					IedConnection_getRCBValues (connection, out error, objectReference, updateRcb);
+				} else {
+					error = 1; /* not connected */
+				}
+			}
+
+			internal void SetRCBValues(out int error, IntPtr rcb, UInt32 parametersMask, bool singleRequest)
+			{
+				if (connection != IntPtr.Zero) {
+					IedConnection_setRCBValues (connection, out error, rcb, parametersMask, singleRequest);
+				} else {
+					error = 1; /* not connected */
+				}
+			}
+
 		}
 
 		public class IedConnectionException : Exception

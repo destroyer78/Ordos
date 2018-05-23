@@ -67,7 +67,7 @@ namespace IEC61850
 			static extern int MmsValue_getBitStringSize(IntPtr self);
 
 			[DllImport("iec61850", CallingConvention = CallingConvention.Cdecl)]
-			static extern void MmsValue_setBitStringBit(IntPtr self, int bitPos, bool value);
+			static extern void MmsValue_setBitStringBit(IntPtr self, int bitPos, [MarshalAs(UnmanagedType.I1)] bool value);
 
 			[DllImport("iec61850", CallingConvention = CallingConvention.Cdecl)]
             [return: MarshalAs(UnmanagedType.I1)]
@@ -113,7 +113,7 @@ namespace IEC61850
 			static extern UInt32 MmsValue_toUnixTimestamp (IntPtr self);
 
 			[DllImport("iec61850", CallingConvention = CallingConvention.Cdecl)]
-			static extern IntPtr MmsValue_newBoolean (bool value);
+			static extern IntPtr MmsValue_newBoolean ([MarshalAs(UnmanagedType.I1)] bool value);
 
 			[DllImport("iec61850", CallingConvention = CallingConvention.Cdecl)]
 			static extern IntPtr MmsValue_newFloat (float value);
@@ -156,7 +156,7 @@ namespace IEC61850
             static extern bool MmsValue_equals(IntPtr self, IntPtr otherValue);
 
 			[DllImport("iec61850", CallingConvention = CallingConvention.Cdecl)]
-			static extern IntPtr MmsValue_newBinaryTime (bool timeOfDay);
+			static extern IntPtr MmsValue_newBinaryTime ([MarshalAs(UnmanagedType.I1)] bool timeOfDay);
 
 			[DllImport("iec61850", CallingConvention = CallingConvention.Cdecl)]
 			static extern void MmsValue_setBinaryTime (IntPtr self, UInt64 timestamp);
@@ -430,9 +430,13 @@ namespace IEC61850
 
 			public MmsDataAccessError GetDataAccessError ()
 			{
-				int errorCode = MmsValue_getDataAccessError (valueReference);
+				if (GetType () == MmsType.MMS_DATA_ACCESS_ERROR) {
+					int errorCode = MmsValue_getDataAccessError (valueReference);
 
-				return (MmsDataAccessError)errorCode;
+					return (MmsDataAccessError)errorCode;
+				}
+				else
+					throw new MmsValueException ("Value is of wrong type");
 			}
 
             /// <summary>
