@@ -11,6 +11,7 @@ using Ordos.Core.Utilities;
 using IEC61850.Client;
 using Microsoft.EntityFrameworkCore;
 using Ordos.DataService.Data;
+using System.Net.NetworkInformation;
 
 namespace Ordos.IEDService.Services
 {
@@ -18,25 +19,45 @@ namespace Ordos.IEDService.Services
     {
         private static bool TestConnection(Device device)
         {
-            var con = new IedConnection();
-            var isConnected = false;
+            bool isConnected = false;
+            Ping pinger = new Ping();
             try
             {
-                con.Connect(device.IPAddress);
-                con.Release();
-                isConnected = true;
+                PingReply reply = pinger.Send(device.IPAddress);
+                isConnected = reply.Status == IPStatus.Success;
             }
-            catch (IedConnectionException)
-            { }
+            catch (PingException e)
+            { Console.WriteLine(e); }
             catch (Exception e)
             { Console.WriteLine(e); }
             finally
             {
-                con.Dispose();
                 DatabaseService.UpdateIEDConnectionStatus(device, isConnected);
             }
             return isConnected;
         }
+
+        //private static bool TestConnection(Device device)
+        //{
+        //    var con = new IedConnection();
+        //    var isConnected = false;
+        //    try
+        //    {
+        //        con.Connect(device.IPAddress);
+        //        con.Release();
+        //        isConnected = true;
+        //    }
+        //    catch (IedConnectionException)
+        //    { }
+        //    catch (Exception e)
+        //    { Console.WriteLine(e); }
+        //    finally
+        //    {
+        //        con.Dispose();
+        //        DatabaseService.UpdateIEDConnectionStatus(device, isConnected);
+        //    }
+        //    return isConnected;
+        //}
 
         public static void GetComtrades()
         {
@@ -100,7 +121,7 @@ namespace Ordos.IEDService.Services
             }
             catch (IedConnectionException e)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine(e);
             }
             catch (Exception e)
             {
