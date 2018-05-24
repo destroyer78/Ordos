@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Ordos.Core.Utilities
 {
     public static class FileNameExtensions
     {
         private static readonly string[] DownloadableFromDevice = { ".zip", ".cfg", ".dat", ".hdr", ".cff" };
+
+        public static string CFGExtension { get; } = ".cfg";
 
         public static string GetDestinationFilename(this string FileName)
         {
