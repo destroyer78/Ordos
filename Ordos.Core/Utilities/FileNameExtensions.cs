@@ -28,7 +28,7 @@ namespace Ordos.Core.Utilities
 
         public static bool IsDownloadable(this string filename)
         {
-            if (filename.ToUpper().Equals("H.ZIP"))
+            if (filename.ToUpper().Contains("DREC_") || filename.ToUpper().Contains("H.ZIP"))
                 return false;
             return DownloadableFromDevice.Any(x => CompareToExtension(Path.GetExtension(filename), x));
         }
