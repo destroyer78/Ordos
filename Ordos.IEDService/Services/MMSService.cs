@@ -27,9 +27,13 @@ namespace Ordos.IEDService.Services
                 isConnected = reply.Status == IPStatus.Success;
             }
             catch (PingException e)
-            { Console.WriteLine(e); }
+            {
+                Console.WriteLine(e);
+            }
             catch (Exception e)
-            { Console.WriteLine(e); }
+            {
+                Console.WriteLine(e);
+            }
             finally
             {
                 DatabaseService.UpdateIEDConnectionStatus(device, isConnected);
@@ -115,12 +119,13 @@ namespace Ordos.IEDService.Services
                     //Remove Temporary files
                     RemoveTemporaryFiles(device);
                 }
-
                 //Close connection:
                 iedConnection.Release();
             }
             catch (IedConnectionException e)
             {
+                Console.WriteLine(e.GetIedClientError());
+                Console.WriteLine(e.GetErrorCode());
                 Console.WriteLine(e);
             }
             catch (Exception e)
@@ -129,8 +134,18 @@ namespace Ordos.IEDService.Services
             }
             finally
             {
-                //TODO: remove temporary files
+                //TODO: remove temporary files (?)
                 iedConnection.Dispose();
+                //try
+                //{
+                //    //Close connection:
+                //    iedConnection.Close();
+                //}
+                //catch (Exception e)
+                //{
+                //    iedConnection.Dispose();
+                //    Console.WriteLine(e);
+                //}
             }
         }
 
@@ -193,7 +208,7 @@ namespace Ordos.IEDService.Services
                 {
                     //If the ied already has that file (should have it in the database), skip;
                     if (drFiles
-                        .Any(x => x.FileName.Equals(downloadableFile.FileName.GetDestionationFilename())
+                        .Any(x => x.FileName.Equals(downloadableFile.FileName.GetDestinationFilename())
                              && x.FileSize.Equals(downloadableFile.FileSize)))
                         continue;
 
@@ -213,7 +228,7 @@ namespace Ordos.IEDService.Services
             {
                 //TODO: Check if the GetTemporaryDownloadPath works on both IEDs: 670, 615;
                 //var destinationFilename = PathService.GetTemporaryDownloadPath(device, FileName.ReplaceAltDirectorySeparator().CleanFileName());
-                var destinationFilename = PathService.GetTemporaryDownloadPath(device, FileName.GetDestionationFilename());
+                var destinationFilename = PathService.GetTemporaryDownloadPath(device, FileName.GetDestinationFilename());
 
                 using (var fs = new FileStream(destinationFilename, FileMode.Create, FileAccess.ReadWrite))
                 using (var w = new BinaryWriter(fs))
@@ -266,57 +281,25 @@ namespace Ordos.IEDService.Services
             //Each zip file should be a DisturbanceRecording;
             foreach (var zipFileInfo in zipFileList)
             {
-                //Init Empty DR;
-                var dr = new DisturbanceRecording { DeviceId = deviceId };
-
-                //Create Temporary variable to store the trigger Time;
-                var creationTime = DateTime.Now;
-
                 using (var zipFile = ZipFile.OpenRead(zipFileInfo.FullName))
                 {
-                    //Iterate over the ZipFile contents/entries:
-                    //Each entry should be a DR File;
-                    //It will first parse the CFG file, to get the triggerDateTime from it.
-                    foreach (var zipArchiveEntry in zipFile.Entries.OrderByDescending(x => x.Name.IsExtension(".cfg")))
+                    //Init Empty DR;
+                    var dr = new DisturbanceRecording { DeviceId = deviceId };
+
+                    //Parse DR Group:
+                    var drFiles = ComtradeExtensions.ParseDRZipGroup(zipFile.Entries);
+
+                    if (drFiles.Count > 0)
                     {
-                        //Add filedata to the DRFile;
-                        var fileData = Array.Empty<byte>();
-                        using (MemoryStream ms = new MemoryStream())
-                        {
-                            zipArchiveEntry.Open().CopyTo(ms);
-                            fileData = ms.ToArray();
-                        }
+                        dr.DRFiles.AddRange(drFiles);
+                        dr.Name = zipFileInfo.Name;
+                        dr.TriggerTime = drFiles.FirstOrDefault().CreationTime;
 
-                        //Get Comtrade Data;
-                        if (zipArchiveEntry.Name.IsExtension(".cfg"))
-                        {
-                            var cfgContents = ComtradeExtensions.ReadLines(zipArchiveEntry.Open(), Encoding.UTF8);
-                            creationTime = ComtradeExtensions.GetTriggerDateTime(cfgContents);
-                            dr.TriggerTime = creationTime;
-
-                            //TODO: Add TriggerLength
-                            //dr.TriggerLength = ComtradeExtensions.GetDRTriggerLength(cfgContents);
-                            //TODO: Add TriggerChannel
-                            //dr.TriggerChannel = ComtradeExtensions.GetDRTriggerChannel(cfgContents);
-                        }
-
-                        //Init the DRFile;
-                        var drFile = new DRFile
-                        {
-                            FileName = zipArchiveEntry.Name,
-                            FileSize = zipArchiveEntry.Length,
-                            //DisturbanceRecordingId = dr.Id,
-                            CreationTime = creationTime,
-                            FileData = fileData,
-                        };
-
-                        //Add the drFile to the DisturbanceRecording:
-                        dr.DRFiles.Add(drFile);
+                        //Add the DR to the collection:
+                        disturbanceRecordings.Add(dr);
                     }
-                }
 
-                //Add the DR to the collection:
-                disturbanceRecordings.Add(dr);
+                }
             }
             return disturbanceRecordings;
         }
@@ -329,7 +312,7 @@ namespace Ordos.IEDService.Services
             //Get all non-ZIP files Collection;
             var drFileList = new DirectoryInfo(temporaryFolder)
                                     .EnumerateFiles("*.*", SearchOption.AllDirectories)
-                                    .Where(x => !x.Name.ToUpper().Contains(".zip"));
+                                    .Where(x => !x.Name.ToUpper().Contains(".ZIP"));
 
             //Group files by their name. At least in some Tested IEDs,
             //DR Files all have the same name.
@@ -341,45 +324,19 @@ namespace Ordos.IEDService.Services
             {
                 //Init Empty DR;
                 var dr = new DisturbanceRecording { DeviceId = deviceId };
-                dr.Name = drFileGroup.Key;
 
-                //Create Temporary variable to store the trigger Time;
-                var creationTime = DateTime.Now;
+                //Parse DR Group:
+                var drFiles = ComtradeExtensions.ParseDRFilesGroup(drFileGroup);
 
-                foreach (var groupItem in drFileGroup.OrderByDescending(x => x.Name.IsExtension(".cfg")))
+                if (drFiles.Count > 0)
                 {
-                    //Add filedata to the DRFile;
-                    var fileData = File.ReadAllBytes(groupItem.FullName);
+                    dr.DRFiles.AddRange(drFiles);
+                    dr.Name = drFileGroup.Key;
+                    dr.TriggerTime = drFiles.FirstOrDefault().CreationTime;
 
-
-                    //Get Comtrade Data;
-                    if (groupItem.Name.IsExtension(".cfg"))
-                    {
-                        creationTime = ComtradeExtensions.GetTriggerDateTime(groupItem.FullName);
-                        dr.TriggerTime = creationTime;
-
-                        //TODO: Add TriggerLength
-                        //dr.TriggerLength = ComtradeExtensions.GetDRTriggerLength(cfgContents);
-                        //TODO: Add TriggerChannel
-                        //dr.TriggerChannel = ComtradeExtensions.GetDRTriggerChannel(cfgContents);
-                    }
-
-                    //Init the DRFile;
-                    var drFile = new DRFile
-                    {
-                        FileName = groupItem.Name,
-                        FileSize = groupItem.Length,
-                        //DisturbanceRecordingId = dr.Id,
-                        CreationTime = creationTime,
-                        FileData = fileData,
-                    };
-
-                    //Add the drFile to the DisturbanceRecording:
-                    dr.DRFiles.Add(drFile);
+                    //Add the DR to the collection:
+                    disturbanceRecordings.Add(dr);
                 }
-
-                //Add the DR to the collection:
-                disturbanceRecordings.Add(dr);
             }
             return disturbanceRecordings;
         }
