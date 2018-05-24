@@ -9,16 +9,15 @@ namespace Ordos.Core.Utilities
     public static class FileNameExtensions
     {
         private static readonly string[] DownloadableFromDevice = { ".zip", ".cfg", ".dat", ".hdr", ".cff" };
-        private static readonly string[] PartsOfDisturbanceRecord = { ".cfg", ".dat", ".hdr" };
 
-        public static string GetDestionationFilename(this string FileName)
+        public static string GetDestinationFilename(this string FileName)
         {
             return Path.GetFileName(FileName).CleanFileName();
         }
 
-        private static bool CompareToExtension(this string orginalExtension, string extension)
+        private static bool CompareToExtension(this string originalExtension, string extension)
         {
-            return string.Equals(orginalExtension, extension, StringComparison.CurrentCultureIgnoreCase);
+            return string.Equals(originalExtension, extension, StringComparison.CurrentCultureIgnoreCase);
         }
 
         public static bool IsExtension(this string filename, string extension)
@@ -31,11 +30,6 @@ namespace Ordos.Core.Utilities
             if (filename.ToUpper().Contains("DREC_") || filename.ToUpper().Contains("H.ZIP"))
                 return false;
             return DownloadableFromDevice.Any(x => CompareToExtension(Path.GetExtension(filename), x));
-        }
-
-        public static bool IsPartOfDisturbanceRecording(this string fileExtension)
-        {
-            return PartsOfDisturbanceRecord.Any(x => CompareToExtension(fileExtension, x));
         }
 
         public static bool IsDirectory(this string filename)
