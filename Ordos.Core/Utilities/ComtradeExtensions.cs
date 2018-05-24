@@ -18,6 +18,69 @@ namespace Ordos.Core.Utilities
             return (tryParse, result);
         }
 
+        public static List<DisturbanceRecording> ParseZipFilesCollection(IEnumerable<FileInfo> fileInfoCollection, int deviceId)
+        {
+            //Init empty list;
+            var disturbanceRecordings = new List<DisturbanceRecording>();
+
+            //Iterate over each zip file.
+            //Each zip file should be a DisturbanceRecording;
+            foreach (var zipFileInfo in fileInfoCollection)
+            {
+                using (var zipFile = ZipFile.OpenRead(zipFileInfo.FullName))
+                {
+                    //Init Empty DR;
+                    var dr = new DisturbanceRecording { DeviceId = deviceId };
+
+                    //Parse DR Group:
+                    var drFiles = ParseDRZipGroup(zipFile.Entries);
+
+                    if (drFiles.Count > 0)
+                    {
+                        dr.DRFiles.AddRange(drFiles);
+                        dr.Name = drFiles.FirstOrDefault().FileName.GetNameWithoutExtension();
+                        dr.TriggerTime = drFiles.FirstOrDefault().CreationTime;
+
+                        //Add the DR to the collection:
+                        disturbanceRecordings.Add(dr);
+                    }
+                }
+            }
+            return disturbanceRecordings;
+        }
+
+        public static IEnumerable<DisturbanceRecording> ParseSingleFilesCollection(IEnumerable<FileInfo> fileInfoCollection, int deviceId)
+        {
+            //Init empty list;
+            var disturbanceRecordings = new List<DisturbanceRecording>();
+
+            //Group files by their name. At least in some Tested IEDs,
+            //DR Files all have the same name.
+            var drFileGroups = fileInfoCollection.GroupBy(x => x.Name.GetNameWithoutExtension());
+
+            //Iterate over each file group.
+            //Each file group should be a DisturbanceRecording;
+            foreach (var drFileGroup in drFileGroups)
+            {
+                //Init Empty DR;
+                var dr = new DisturbanceRecording { DeviceId = deviceId };
+
+                //Parse DR Group:
+                var drFiles = ParseDRFilesGroup(drFileGroup);
+
+                if (drFiles.Count > 0)
+                {
+                    dr.DRFiles.AddRange(drFiles);
+                    dr.Name = drFileGroup.Key;
+                    dr.TriggerTime = drFiles.FirstOrDefault().CreationTime;
+
+                    //Add the DR to the collection:
+                    disturbanceRecordings.Add(dr);
+                }
+            }
+            return disturbanceRecordings;
+        }
+
         public static List<DRFile> ParseDRZipGroup(IEnumerable<ZipArchiveEntry> drFilenamesGroup)
         {
             var list = new List<DRFile>();
@@ -26,7 +89,7 @@ namespace Ordos.Core.Utilities
             //Create Temporary variable to store the trigger Time;
             var creationTime = DateTime.Now;
 
-            foreach (var groupItem in drFilenamesGroup)
+            foreach (var groupItem in drFilenamesGroup.Where(x=>x.Name.IsPartOfDisturbanceRecording()))
             {
                 //Add filedata to the DRFile;
                 var fileData = Array.Empty<byte>();

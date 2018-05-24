@@ -77,18 +77,24 @@ namespace Ordos.Tests
             {
                 var zipEntries = zipFile.Entries;
 
-                Assert.NotEmpty(ComtradeExtensions.ParseDRZipGroup(zipEntries));
-                Assert.Equal(2, ComtradeExtensions.ParseDRZipGroup(zipEntries).Count());
+                var drFiles = ComtradeExtensions.ParseDRZipGroup(zipEntries);
 
-                Assert.True(ComtradeExtensions.ParseDRZipGroup(zipEntries).FirstOrDefault().FileSize > 0);
+                Assert.NotEmpty(drFiles);
+                Assert.Equal(2, drFiles.Count());
 
-                Assert.NotEmpty(ComtradeExtensions.ParseDRZipGroup(zipEntries).FirstOrDefault().FileName);
-                Assert.Equal("010A0005.CFG", ComtradeExtensions.ParseDRZipGroup(zipEntries).FirstOrDefault().FileName);
+                foreach (var item in drFiles)
+                {
+                    Assert.True(item.FileSize > 1);
 
-                Assert.NotEmpty(ComtradeExtensions.ParseDRZipGroup(zipEntries).FirstOrDefault().FileData);
-                Assert.Equal(1265, ComtradeExtensions.ParseDRZipGroup(zipEntries).FirstOrDefault().FileData.Length);
+                    Assert.NotEmpty(item.FileName);
+                    Assert.Contains("010A0005", item.FileName);
+                    Assert.True(item.FileName.Length > 4);
 
-                Assert.Equal(ComtradeExtensions.TryParseDRDate("04/04/2018,13:45:38.404284").DateTime, ComtradeExtensions.ParseDRZipGroup(zipEntries).FirstOrDefault().CreationTime);
+                    Assert.NotEmpty(item.FileData);
+                    Assert.True(item.FileData.Length > 1);
+
+                    Assert.Equal(ComtradeExtensions.TryParseDRDate("04/04/2018,13:45:38.404284").DateTime, item.CreationTime);
+                }
             }
         }
 
@@ -100,18 +106,24 @@ namespace Ordos.Tests
             {
                 var zipEntries = zipFile.Entries;
 
-                Assert.NotEmpty(ComtradeExtensions.ParseDRZipGroup(zipEntries));
-                Assert.Equal(3, ComtradeExtensions.ParseDRZipGroup(zipEntries).Count());
+                var drFiles = ComtradeExtensions.ParseDRZipGroup(zipEntries);
 
-                Assert.True(ComtradeExtensions.ParseDRZipGroup(zipEntries).FirstOrDefault().FileSize > 0);
+                Assert.NotEmpty(drFiles);
+                Assert.Equal(3, drFiles.Count());
 
-                Assert.NotEmpty(ComtradeExtensions.ParseDRZipGroup(zipEntries).FirstOrDefault().FileName);
-                Assert.Equal("Dist.cfg", ComtradeExtensions.ParseDRZipGroup(zipEntries).FirstOrDefault().FileName);
+                foreach (var item in drFiles)
+                {
+                    Assert.True(item.FileSize > 1);
 
-                Assert.NotEmpty(ComtradeExtensions.ParseDRZipGroup(zipEntries).FirstOrDefault().FileData);
-                Assert.Equal(1269, ComtradeExtensions.ParseDRZipGroup(zipEntries).FirstOrDefault().FileData.Length);
+                    Assert.NotEmpty(item.FileName);
+                    Assert.Contains("Dist", item.FileName);
+                    Assert.True(item.FileName.Length > 4);
 
-                Assert.Equal(ComtradeExtensions.TryParseDRDate("20/07/2016,10:09:14.760712").DateTime, ComtradeExtensions.ParseDRZipGroup(zipEntries).FirstOrDefault().CreationTime);
+                    Assert.NotEmpty(item.FileData);
+                    Assert.True(item.FileData.Length > 1);
+
+                    Assert.Equal(ComtradeExtensions.TryParseDRDate("20/07/2016,10:09:14.760712").DateTime, item.CreationTime);
+                }
             }
         }
 
@@ -124,19 +136,101 @@ namespace Ordos.Tests
                 new FileInfo("./Resources/Single1.DAT")
             };
 
-            Assert.NotEmpty(ComtradeExtensions.ParseDRFilesGroup(filenames));
-            Assert.Equal(2, ComtradeExtensions.ParseDRFilesGroup(filenames).Count());
+            var drFiles = ComtradeExtensions.ParseDRFilesGroup(filenames);
 
-            Assert.True(ComtradeExtensions.ParseDRFilesGroup(filenames).FirstOrDefault().FileSize > 0);
+            Assert.NotEmpty(drFiles);
+            Assert.Equal(2, drFiles.Count());
 
-            Assert.NotEmpty(ComtradeExtensions.ParseDRFilesGroup(filenames).FirstOrDefault().FileName);
-            Assert.Equal("Single1.CFG", ComtradeExtensions.ParseDRFilesGroup(filenames).FirstOrDefault().FileName);
-            Assert.Equal("Single1.DAT", ComtradeExtensions.ParseDRFilesGroup(filenames).LastOrDefault().FileName);
+            foreach (var item in drFiles)
+            {
+                Assert.True(item.FileSize > 1);
 
-            Assert.NotEmpty(ComtradeExtensions.ParseDRFilesGroup(filenames).FirstOrDefault().FileData);
-            Assert.Equal(1265, ComtradeExtensions.ParseDRFilesGroup(filenames).FirstOrDefault().FileData.Length);
+                Assert.NotEmpty(item.FileName);
+                Assert.Contains("Single1", item.FileName);
+                Assert.True(item.FileName.Length > 4);
 
-            Assert.Equal(ComtradeExtensions.TryParseDRDate("05/04/2018,13:45:38.404284").DateTime, ComtradeExtensions.ParseDRFilesGroup(filenames).FirstOrDefault().CreationTime);
+                Assert.NotEmpty(item.FileData);
+                Assert.True(item.FileData.Length > 1);
+
+                Assert.Equal(ComtradeExtensions.TryParseDRDate("05/04/2018,13:45:38.404284").DateTime, item.CreationTime);
+            }
+        }
+
+        //Parse Single Files Folder
+        [Fact]
+        public void TestParseFilesGroupFolder()
+        {
+            var drFileList = new DirectoryInfo("./Resources/")
+                .EnumerateFiles("*.*", SearchOption.AllDirectories)
+                .Where(x => !x.Name.Contains("Empty"))
+                .Where(x => x.Name.IsPartOfDisturbanceRecording());
+
+            var disturbanceRecordings = ComtradeExtensions.ParseSingleFilesCollection(drFileList, 1);
+
+            Assert.NotEmpty(disturbanceRecordings);
+            Assert.Equal(2, disturbanceRecordings.Count());
+
+            foreach (var dr in disturbanceRecordings)
+            {
+                Assert.NotEmpty(dr.Name);
+
+                var drFiles = dr.DRFiles;
+
+                Assert.NotEmpty(drFiles);
+                Assert.True(drFiles.Count() > 1);
+
+                foreach (var item in drFiles)
+                {
+                    Assert.True(item.FileSize > 1);
+
+                    Assert.NotEmpty(item.FileName);
+                    Assert.True(item.FileName.Length > 4);
+
+                    Assert.NotEmpty(item.FileData);
+                    Assert.True(item.FileData.Length > 1);
+
+                    Assert.Contains(dr.Name, item.FileName);
+                    Assert.Equal(dr.TriggerTime, item.CreationTime);
+                }
+            }
+        }
+
+        //Parse ZIP Files Folder
+        [Fact]
+        public void TestParseZIPFolder()
+        {
+            var drFileList = new DirectoryInfo("./Resources/")
+                .EnumerateFiles("*.zip", SearchOption.AllDirectories)
+                .Where(x => x.Name.IsDownloadable()); 
+
+            var disturbanceRecordings = ComtradeExtensions.ParseZipFilesCollection(drFileList, 1);
+
+            Assert.NotEmpty(disturbanceRecordings);
+            Assert.Equal(2, disturbanceRecordings.Count());
+
+            foreach (var dr in disturbanceRecordings)
+            {
+                Assert.NotEmpty(dr.Name);
+
+                var drFiles = dr.DRFiles;
+
+                Assert.NotEmpty(drFiles);
+                Assert.True(drFiles.Count() > 1);
+
+                foreach (var item in drFiles)
+                {
+                    Assert.True(item.FileSize > 1);
+
+                    Assert.NotEmpty(item.FileName);
+                    Assert.True(item.FileName.Length > 4);
+
+                    Assert.NotEmpty(item.FileData);
+                    Assert.True(item.FileData.Length > 1);
+
+                    Assert.Contains(dr.Name, item.FileName);
+                    Assert.Equal(dr.TriggerTime, item.CreationTime);
+                }
+            }
         }
     }
 }

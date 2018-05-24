@@ -22,6 +22,18 @@ namespace Ordos.Tests
             Assert.True(Core.Utilities.FileNameExtensions.IsExtension(filename, ".CFG"));
         }
 
+        //IsPartOfDR
+        [Fact]
+        public void TestIsPartOfDR()
+        {
+            Assert.True(Core.Utilities.FileNameExtensions.IsPartOfDisturbanceRecording("./Resources/Single1.CFG"));
+            Assert.True(Core.Utilities.FileNameExtensions.IsPartOfDisturbanceRecording("./Resources/Single1.DAT"));
+            Assert.True(Core.Utilities.FileNameExtensions.IsPartOfDisturbanceRecording("./Resources/Single1.hdr"));
+
+            Assert.False(Core.Utilities.FileNameExtensions.IsPartOfDisturbanceRecording("./Resources/Zip1.zip"));
+            Assert.False(Core.Utilities.FileNameExtensions.IsPartOfDisturbanceRecording("./Resources/Text1.txt"));
+        }
+
         //IsDownloadable
         [Fact]
         public void TestIsDownloadable()

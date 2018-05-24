@@ -7,12 +7,18 @@ namespace Ordos.Core.Utilities
     public static class FileNameExtensions
     {
         private static readonly string[] DownloadableFromDevice = { ".zip", ".cfg", ".dat", ".hdr", ".cff" };
+        private static readonly string[] PartsOfDisturbanceRecord = { ".cfg", ".dat", ".hdr" };
 
         public static string CFGExtension { get; } = ".cfg";
 
         public static string GetDestinationFilename(this string FileName)
         {
             return Path.GetFileName(FileName).CleanFileName();
+        }
+
+        public static bool IsPartOfDisturbanceRecording(this string filename)
+        {
+            return PartsOfDisturbanceRecord.Any(x => IsExtension(filename, x));
         }
 
         private static bool CompareToExtension(this string originalExtension, string extension)

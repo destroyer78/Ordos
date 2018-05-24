@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DisturbanceRecording HeaderFileVersion="1.0" >
+<generals>
+<general name="RecorderId" value="1" />
+<general name="TrigDateTime" value="20/07/2016,10:09:17.760" />
+<general name="TrigChannel" value="IL1" />
+<general name="TrigWhileIEDinTestMode" value="0" />
+<general name="SequenceNumber" value="169" />
+<general name="RecordingNumber" value="686" />
+<general name="TypeOfTimeSync" value="SNTP" />
+<general name="DistRecInst" value="1" />
+<general name="EventRecInst" value="1" />
+<general name="FaultLocInst" value="0" />
+<general name="LineLength" value="-1.000000E+00" />
+<general name="DisRecPlatform" value="DISREC 5A" />
+<general name="ThreePhaseIED" value="1" />
+<general name="SystemFreq" value="5.000000E+01" />
+<general name="TotalRecordingTime" value="11000" />
+<general name="PreTrigRecordingTime" value="3000" />
+<general name="PostFaultRecordingTime" value="7990" />
+<general name="RecordingTimeLimitSetting" value="8000" />
+<general name="PreTrigRecordingTimeSetting" value="3000" />
+<general name="PostFaultRecordingTimeSetting" value="10000" />
+<general name="SamplingFrequency" value="1000" />
+<general name="IEDsourceType" value="REF630 1.00.0" />
+<general name="IEDmodVersionNo" value="1.0" />
+<general name="StationId" value="SALA 3000" />
+<general name="ObjectId" value="J13" />
+<general name="IEDid" value="Unit name" />
+<general name="StationNumber" value="0" />
+<general name="ObjectNumber" value="0" />
+<general name="IEDnumber" value="0" />
+<general name="ActiveSettingGroup" value="1" />
+</generals>
+<analoguechannels>
+<analoguechannel channelno="1" channelindexnoincfgfile="-1" channelid="IL1" channelinuse="0" primarytransformerrating="8.000000E+02" secondarytransformerrating="1.000000E+00" ctdirection="1" channeltype="1" triglowstatus="0" triglowsetting="160" triglowenable="0" trighighstatus="1" trighighsetting="320" trighighenable="1" valueattrig="-447" pretrigrmsvalue="3.115513E+02" faultrmsvalue="3.115513E+02" pretrigangle="6.974965E+01" faultangle="6.974965E+01" />
+<analoguechannel channelno="2" channelindexnoincfgfile="-1" channelid="IL2" channelinuse="0" primarytransformerrating="8.000000E+02" secondarytransformerrating="1.000000E+00" ctdirection="1" channeltype="1" triglowstatus="0" triglowsetting="160" triglowenable="0" trighighstatus="0" trighighsetting="320" trighighenable="1" valueattrig="180" pretrigrmsvalue="3.218034E+02" faultrmsvalue="3.218034E+02" pretrigangle="-5.189176E+01" faultangle="-5.189176E+01" />
+<analoguechannel channelno="3" channelindexnoincfgfile="-1" channelid="IL3" channelinuse="0" primarytransformerrating="8.000000E+02" secondarytransformerrating="1.000000E+00" ctdirection="1" channeltype="1" triglowstatus="0" triglowsetting="160" triglowenable="0" trighighstatus="0" trighighsetting="320" trighighenable="1" valueattrig="266" pretrigrmsvalue="3.091070E+02" faultrmsvalue="3.091070E+02" pretrigangle="-1.727938E+02" faultangle="-1.727938E+02" />
+<analoguechannel channelno="5" channelindexnoincfgfile="-1" channelid="Io calc" channelinuse="0" primarytransformerrating="8.000000E+02" secondarytransformerrating="1.000000E+00" ctdirection="1" channeltype="1" triglowstatus="0" triglowsetting="25" triglowenable="0" trighighstatus="0" trighighsetting="50" trighighenable="1" valueattrig="2" pretrigrmsvalue="3.855386E-01" faultrmsvalue="3.855386E-01" pretrigangle="-5.344696E+01" faultangle="-5.344696E+01" />
+<analoguechannel channelno="6" channelindexnoincfgfile="-1" channelid="UL1" channelinuse="0" primarytransformerrating="2.300000E+04" secondarytransformerrating="1.000000E+02" ctdirection="1" channeltype="0" triglowstatus="0" triglowsetting="11" triglowenable="0" trighighstatus="0" trighighsetting="27" trighighenable="1" valueattrig="-10131" pretrigrmsvalue="1.364314E+04" faultrmsvalue="1.364314E+04" pretrigangle="1.201737E+02" faultangle="1.201737E+02" />
+<analoguechannel channelno="7" channelindexnoincfgfile="-1" channelid="UL2" channelinuse="0" primarytransformerrating="2.300000E+04" secondarytransformerrating="1.000000E+02" ctdirection="1" channeltype="0" triglowstatus="0" triglowsetting="11" triglowenable="0" trighighstatus="0" trighighsetting="27" trighighenable="1" valueattrig="-8730" pretrigrmsvalue="1.333615E+04" faultrmsvalue="1.333615E+04" pretrigangle="0.000000E+00" faultangle="0.000000E+00" />
+<analoguechannel channelno="8" channelindexnoincfgfile="-1" channelid="UL3" channelinuse="0" primarytransformerrating="2.300000E+04" secondarytransformerrating="1.000000E+02" ctdirection="1" channeltype="0" triglowstatus="0" triglowsetting="11" triglowenable="0" trighighstatus="0" trighighsetting="27" trighighenable="1" valueattrig="18884" pretrigrmsvalue="1.344902E+04" faultrmsvalue="1.344902E+04" pretrigangle="-1.188417E+02" faultangle="-1.188417E+02" />
+<analoguechannel channelno="10" channelindexnoincfgfile="-1" channelid="Uo calc" channelinuse="0" primarytransformerrating="2.300000E+04" secondarytransformerrating="1.000000E+02" ctdirection="1" channeltype="0" triglowstatus="0" triglowsetting="6" triglowenable="0" trighighstatus="0" trighighsetting="26" trighighenable="0" valueattrig="8" pretrigrmsvalue="5.478797E+00" faultrmsvalue="5.478797E+00" pretrigangle="1.227320E+02" faultangle="1.227320E+02" />
+</analoguechannels>
+<binarychannels>
+<binarychannel channelno="1" channelindexnoincfgfile="1" channelid="CB OPEN CMD" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="2" channelindexnoincfgfile="2" channelid="CB CLOSE CMD" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="3" channelindexnoincfgfile="3" channelid="CB OPEN IND" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="4" channelindexnoincfgfile="4" channelid="CB CLOSE IND" triglevelsetting="1" trigenable="1" valueattrig="1" trigstatus="0" />
+<binarychannel channelno="5" channelindexnoincfgfile="5" channelid="51  I&gt; TRIP" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="6" channelindexnoincfgfile="6" channelid="51  I&gt; ST" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="7" channelindexnoincfgfile="7" channelid="51  I&gt;&gt; TRIP" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="8" channelindexnoincfgfile="8" channelid="51  I&gt;&gt; ST" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="9" channelindexnoincfgfile="9" channelid="50  I&gt;&gt;&gt; TRIP" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="10" channelindexnoincfgfile="10" channelid="50  I&gt;&gt;&gt; ST" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="11" channelindexnoincfgfile="11" channelid="51N EF&gt; TRIP" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="12" channelindexnoincfgfile="12" channelid="51N EF&gt; ST" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="13" channelindexnoincfgfile="13" channelid="50N EF&gt;&gt; TRIP" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="14" channelindexnoincfgfile="14" channelid="50N EF&gt;&gt; ST" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="15" channelindexnoincfgfile="15" channelid="51G EF&gt;&gt; TRIP" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="16" channelindexnoincfgfile="16" channelid="51G EF&gt;&gt; ST" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="17" channelindexnoincfgfile="17" channelid="TRIP_MOLINOS" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="18" channelindexnoincfgfile="18" channelid="PANEL_EARTHED" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="19" channelindexnoincfgfile="19" channelid="CB_TRIPPED" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="20" channelindexnoincfgfile="20" channelid="TCS_ALARM" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="21" channelindexnoincfgfile="21" channelid="81 OF TRIP" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="22" channelindexnoincfgfile="22" channelid="81 UF TRIP" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="23" channelindexnoincfgfile="23" channelid="27  U&lt; TRIP" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="24" channelindexnoincfgfile="24" channelid="27  U&lt; ST" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="25" channelindexnoincfgfile="25" channelid="27  U&lt;&lt; TRIP" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="26" channelindexnoincfgfile="26" channelid="27  U&lt;&lt; ST" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="27" channelindexnoincfgfile="27" channelid="59  U&gt; TRIP" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="28" channelindexnoincfgfile="28" channelid="59  U&gt; ST" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="29" channelindexnoincfgfile="29" channelid="59  U&gt;&gt; TRIP" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="30" channelindexnoincfgfile="30" channelid="59  U&gt;&gt; ST" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="31" channelindexnoincfgfile="31" channelid="51BF RETRIP" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="32" channelindexnoincfgfile="32" channelid="51BF BUTRIP" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="33" channelindexnoincfgfile="33" channelid="59N&gt;TRIP" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="34" channelindexnoincfgfile="34" channelid="59N&gt;ST" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="35" channelindexnoincfgfile="35" channelid="OPERO_PROTECC" triglevelsetting="1" trigenable="1" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="36" channelindexnoincfgfile="36" channelid="REMOTO" triglevelsetting="1" trigenable="0" valueattrig="1" trigstatus="0" />
+<binarychannel channelno="37" channelindexnoincfgfile="37" channelid="LOCAL" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="38" channelindexnoincfgfile="38" channelid="INT_LISTO" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="39" channelindexnoincfgfile="39" channelid="CMD_CLOS_MOLI" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="40" channelindexnoincfgfile="40" channelid="VT PLUG OK" triglevelsetting="1" trigenable="0" valueattrig="1" trigstatus="0" />
+<binarychannel channelno="41" channelindexnoincfgfile="41" channelid="MCB_DC_ALARM" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="42" channelindexnoincfgfile="42" channelid="MCB_AC_ALARM" triglevelsetting="1" trigenable="0" valueattrig="1" trigstatus="0" />
+<binarychannel channelno="43" channelindexnoincfgfile="43" channelid="SPRING_DISCHA" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="44" channelindexnoincfgfile="44" channelid="GASPRES_ALARM" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="45" channelindexnoincfgfile="45" channelid="MECH. OPER" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="46" channelindexnoincfgfile="46" channelid="ES FEHLER" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="47" channelindexnoincfgfile="47" channelid="CB_OPEN_REL" triglevelsetting="1" trigenable="0" valueattrig="1" trigstatus="0" />
+<binarychannel channelno="48" channelindexnoincfgfile="48" channelid="CB_CLOSE_REL" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="49" channelindexnoincfgfile="49" channelid="ISO1_OP_CMD" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="50" channelindexnoincfgfile="50" channelid="ISO1_CL_CMD" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="51" channelindexnoincfgfile="51" channelid="ISO1_OP_IND" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="52" channelindexnoincfgfile="52" channelid="ISO1_CL_IND" triglevelsetting="1" trigenable="0" valueattrig="1" trigstatus="0" />
+<binarychannel channelno="53" channelindexnoincfgfile="53" channelid="ESW1_OP_CMD" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="54" channelindexnoincfgfile="54" channelid="ESW_CL_CMD" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="55" channelindexnoincfgfile="55" channelid="ESW1_OP_IND" triglevelsetting="1" trigenable="0" valueattrig="1" trigstatus="0" />
+<binarychannel channelno="56" channelindexnoincfgfile="56" channelid="ESW1_CL_IND" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="57" channelindexnoincfgfile="57" channelid="CB_TRIP_MOLIN" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+<binarychannel channelno="58" channelindexnoincfgfile="58" channelid="TRIP_MOLINO" triglevelsetting="1" trigenable="0" valueattrig="0" trigstatus="0" />
+</binarychannels>
+<faultlocations>
+<faultlocation name="FaultLocCalculationStatus" value="-1" />
+<faultlocation name="FaultLocFaultedLoop" value="-1" />
+<faultlocation name="FaultLocDistanceToFault" value="-1" />
+<faultlocation name="FaultLocDirectionToFault" value="-1" />
+</faultlocations>
+<events>
+</events>
+</DisturbanceRecording>

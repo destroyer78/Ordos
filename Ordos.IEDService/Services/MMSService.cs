@@ -256,10 +256,10 @@ namespace Ordos.IEDService.Services
              */
 
             //Every DR Zip file that contains multiple Single files:
-            disturbanceRecordings.AddRange(parseTemporaryZipFiles(temporaryFolder, device.Id));
+            disturbanceRecordings.AddRange(ParseTemporaryZipFiles(temporaryFolder, device.Id));
 
             //And every single file:
-            disturbanceRecordings.AddRange(parseTemporarySingleFiles(temporaryFolder, device.Id));
+            disturbanceRecordings.AddRange(ParseTemporarySingleFiles(temporaryFolder, device.Id));
 
             //TODO: Test, pero en todo caso, sacar todos los que tengan un size = 0;
             //Un caso particular es que no se descarga el contenido de las DR, el archivo queda en 0;
@@ -268,77 +268,24 @@ namespace Ordos.IEDService.Services
             return disturbanceRecordings;
         }
 
-        private static List<DisturbanceRecording> parseTemporaryZipFiles(string temporaryFolder, int deviceId)
+        private static List<DisturbanceRecording> ParseTemporaryZipFiles(string temporaryFolder, int deviceId)
         {
-            //Init empty list;
-            var disturbanceRecordings = new List<DisturbanceRecording>();
-
             //Get zip files Collection;
             var zipFileList = new DirectoryInfo(temporaryFolder)
                 .EnumerateFiles("*.zip", SearchOption.AllDirectories);
+                
 
-            //Iterate over each zip file.
-            //Each zip file should be a DisturbanceRecording;
-            foreach (var zipFileInfo in zipFileList)
-            {
-                using (var zipFile = ZipFile.OpenRead(zipFileInfo.FullName))
-                {
-                    //Init Empty DR;
-                    var dr = new DisturbanceRecording { DeviceId = deviceId };
-
-                    //Parse DR Group:
-                    var drFiles = ComtradeExtensions.ParseDRZipGroup(zipFile.Entries);
-
-                    if (drFiles.Count > 0)
-                    {
-                        dr.DRFiles.AddRange(drFiles);
-                        dr.Name = zipFileInfo.Name;
-                        dr.TriggerTime = drFiles.FirstOrDefault().CreationTime;
-
-                        //Add the DR to the collection:
-                        disturbanceRecordings.Add(dr);
-                    }
-
-                }
-            }
-            return disturbanceRecordings;
+            return ComtradeExtensions.ParseZipFilesCollection(zipFileList, deviceId);
         }
 
-        private static IEnumerable<DisturbanceRecording> parseTemporarySingleFiles(string temporaryFolder, int deviceId)
+        private static IEnumerable<DisturbanceRecording> ParseTemporarySingleFiles(string temporaryFolder, int deviceId)
         {
-            //Init empty list;
-            var disturbanceRecordings = new List<DisturbanceRecording>();
-
             //Get all non-ZIP files Collection;
             var drFileList = new DirectoryInfo(temporaryFolder)
                                     .EnumerateFiles("*.*", SearchOption.AllDirectories)
-                                    .Where(x => !x.Name.ToUpper().Contains(".ZIP"));
+                                    .Where(x => x.Name.IsPartOfDisturbanceRecording());
 
-            //Group files by their name. At least in some Tested IEDs,
-            //DR Files all have the same name.
-            var drFileGroups = drFileList.GroupBy(x => x.Name.GetNameWithoutExtension());
-
-            //Iterate over each file group.
-            //Each file group should be a DisturbanceRecording;
-            foreach (var drFileGroup in drFileGroups)
-            {
-                //Init Empty DR;
-                var dr = new DisturbanceRecording { DeviceId = deviceId };
-
-                //Parse DR Group:
-                var drFiles = ComtradeExtensions.ParseDRFilesGroup(drFileGroup);
-
-                if (drFiles.Count > 0)
-                {
-                    dr.DRFiles.AddRange(drFiles);
-                    dr.Name = drFileGroup.Key;
-                    dr.TriggerTime = drFiles.FirstOrDefault().CreationTime;
-
-                    //Add the DR to the collection:
-                    disturbanceRecordings.Add(dr);
-                }
-            }
-            return disturbanceRecordings;
+            return ComtradeExtensions.ParseSingleFilesCollection(drFileList, deviceId);
         }
 
         private static void StoreComtradeFilesToDatabase(Device device, List<DisturbanceRecording> temporaryComtradeFiles)
