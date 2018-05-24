@@ -89,6 +89,7 @@ namespace Ordos.IEDService.Services
         private static void ProcessDeviceComtradeFiles(Device device)
         {
             var iedConnection = new IedConnection();
+            iedConnection.ConnectTimeout = 20000;
             try
             {
                 //Connect:
