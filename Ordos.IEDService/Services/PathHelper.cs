@@ -56,9 +56,12 @@ namespace Ordos.IEDService.Services
             return ValidatePath(path, filename);
         }
 
+        /// <summary>
+        /// Delete the donwloaded file folder and recursive files
+        /// </summary>
+        /// <param name="device">Device to take the Station, Bay, DeviceName</param>
         internal static void RemoveTemporaryFiles(Device device)
         {
-            //Delete the donwloaded file folder and recursive files:
             var temporaryFolder = GetTemporaryDownloadFolder(device);
             Directory.Delete(temporaryFolder, true);
         }

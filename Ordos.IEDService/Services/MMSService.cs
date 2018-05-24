@@ -343,16 +343,6 @@ namespace Ordos.IEDService.Services
 
                 context.SaveChanges();
             }
-
-            //using (var context = new SystemContext())
-            //{
-            //    //Get the DB device:
-            //    var dev = context.Devices
-            //                     .Include(x => x.DisturbanceRecordings)
-            //                        .ThenInclude(dr => dr.DRFiles)
-            //                     .FirstOrDefault(x => x.Id.Equals(device.Id));
-            //}
-
         }
 
         private static void ExportDisturbanceRecordings(Device device, List<DisturbanceRecording> temporaryComtradeFiles)
