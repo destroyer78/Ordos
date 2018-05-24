@@ -33,9 +33,9 @@ namespace Ordos.Core.Utilities
 
         public static bool IsDownloadable(this string filename)
         {
-            if (filename.ToUpper().Contains("DREC_") || filename.ToUpper().Contains("H.ZIP"))
+            if (filename.ToUpper().Contains("H.ZIP"))
                 return false;
-            return DownloadableFromDevice.Any(x => CompareToExtension(Path.GetExtension(filename), x));
+            return DownloadableFromDevice.Any(x => IsExtension(filename, x));
         }
 
         public static bool IsDirectory(this string filename)
