@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Ordos.Core.Models;
+using Ordos.DataService.Services;
 
 namespace Ordos.DataService.Data
 {
@@ -19,7 +20,7 @@ namespace Ordos.DataService.Data
             {
                 new ConfigurationValue()
                 {
-                    Id = "CompanyName",
+                    Id = DatabaseService.CompanyNameLabel,
                     Value = @"MyCompany",
                 },
             };

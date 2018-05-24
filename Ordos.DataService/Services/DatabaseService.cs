@@ -10,8 +10,9 @@ namespace Ordos.DataService.Services
 {
     public static class DatabaseService
     {
-        public static List<Device> Devices;
-        public static string CompanyName;
+        public static List<Device> Devices { get; private set; }
+        public static string CompanyName { get; set; }
+        public static string CompanyNameLabel { get; } = "CompanyName";
 
         public static void Init()
         {
@@ -34,7 +35,7 @@ namespace Ordos.DataService.Services
             using (var context = new SystemContext())
             {
                 if (context.ConfigurationValues == null) return;
-                CompanyName = context.ConfigurationValues.FirstOrDefault(x => x.Id.Contains("CompanyName"))?.Value;
+                CompanyName = context.ConfigurationValues.FirstOrDefault(x => x.Id.Contains(CompanyNameLabel))?.Value;
             }
         }
 
