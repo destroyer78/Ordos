@@ -17,52 +17,11 @@ namespace Ordos.IEDService.Services
 {
     public class MMSService : IConnectionService
     {
-        private static bool TestConnection(Device device)
-        {
-            bool isConnected = false;
-            Ping pinger = new Ping();
-            try
-            {
-                PingReply reply = pinger.Send(device.IPAddress);
-                isConnected = reply.Status == IPStatus.Success;
-            }
-            catch (PingException e)
-            {
-                Console.WriteLine(e);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-            finally
-            {
-                DatabaseService.UpdateIEDConnectionStatus(device, isConnected);
-            }
-            return isConnected;
-        }
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        //private static bool TestConnection(Device device)
-        //{
-        //    var con = new IedConnection();
-        //    var isConnected = false;
-        //    try
-        //    {
-        //        con.Connect(device.IPAddress);
-        //        con.Release();
-        //        isConnected = true;
-        //    }
-        //    catch (IedConnectionException)
-        //    { }
-        //    catch (Exception e)
-        //    { Console.WriteLine(e); }
-        //    finally
-        //    {
-        //        con.Dispose();
-        //        DatabaseService.UpdateIEDConnectionStatus(device, isConnected);
-        //    }
-        //    return isConnected;
-        //}
-
+        /// <summary>
+        /// Main entry point for the IED Service.
+        /// </summary>
         public static void GetComtrades()
         {
             DatabaseService.LoadDevices();
@@ -77,107 +36,154 @@ namespace Ordos.IEDService.Services
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    Logger.Error(e);
                 }
             }
         }
 
-        /// <summary>
-        /// Main entry point for the IED Comtrades.
-        /// </summary>
-        /// <param name="device"></param>
-        private static void ProcessDeviceComtradeFiles(Device device)
+        private static bool TestConnection(Device device)
         {
-            var iedConnection = new IedConnection();
-            iedConnection.ConnectTimeout = 20000;
+            Logger.Trace($"{device}");
+
+            bool isConnected = false;
+            Ping pinger = new Ping();
             try
             {
-                //Connect:
+                PingReply reply = pinger.Send(device.IPAddress);
+                isConnected = reply.Status == IPStatus.Success;
+            }
+            catch (PingException e)
+            {
+                Logger.Error(e);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e);
+            }
+            finally
+            {
+                DatabaseService.UpdateIEDConnectionStatus(device, isConnected);
+            }
+            return isConnected;
+        }
+
+        /// <summary>
+        /// Connect and read IED Comtrade Files.
+        /// </summary>
+        /// <param name="device">Device to read</param>
+        private static void ProcessDeviceComtradeFiles(Device device)
+        {
+            var iedConnection = new IedConnection
+            {
+                ConnectTimeout = 20000
+            };
+
+            try
+            {
+                Logger.Info($"{device} - Connecting to Device");
+
                 iedConnection.Connect(device.IPAddress);
+
+                Logger.Info($"{device} - Connection Successful");
+
+                Logger.Info($"{device} - Get IED Files");
 
                 //Download a list of files in the IED:
                 //Uses string.Empty as main root of the IED.
                 var downloadableFileList = GetDownloadableFileList(iedConnection, device, string.Empty);
 
+                Logger.Info($"{device} - {downloadableFileList.Count()} Files Found");
+
                 //Remove the files that have been already downloaded before:
                 //It will filter the files that are not in the DB.
                 var filteredDownloadableFileList = FilterExistingFiles(device, downloadableFileList);
 
+                Logger.Info($"{device} - {filteredDownloadableFileList.Count()} New Files Found");
+
                 if (filteredDownloadableFileList.Count() > 0)
                 {
-                    //Download the new files:
+                    Logger.Info($"{device} - Downloading Comtrade files");
+
                     DownloadComtradeFiles(iedConnection, device, filteredDownloadableFileList);
 
-                    //Parse the downloaded files:
+                    Logger.Info($"{device} - Reading files");
+
                     var temporaryComtradeFiles = ParseTemporaryComtradeFiles(device);
 
-                    //Store the new files in the database:
+                    Logger.Info($"{device} - Saving files to the DB");
+
                     StoreComtradeFilesToDatabase(device, temporaryComtradeFiles);
 
-                    //Export the new files to the export path:
+                    Logger.Info($"{device} - Exporting files");
+
                     ExportDisturbanceRecordings(device, temporaryComtradeFiles);
 
-                    //Remove Temporary files
-                    RemoveTemporaryFiles(device);
+                    Logger.Info($"{device} - Removing temporary files");
+
+                    PathHelper.RemoveTemporaryFiles(device);
                 }
+                Logger.Info($"{device} - Disconnecting...");
+
                 //Close connection:
                 iedConnection.Release();
             }
             catch (IedConnectionException e)
             {
-                Console.WriteLine(e.GetIedClientError());
-                Console.WriteLine(e.GetErrorCode());
-                Console.WriteLine(e);
+                Logger.Fatal($"Client Error: {e.GetIedClientError()}");
+                Logger.Fatal($"Error Code: {e.GetErrorCode()}");
+                Logger.Fatal($"IED Connection Exception: {e}");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.Fatal(e);
             }
             finally
             {
-                //TODO: remove temporary files (?)
-                iedConnection.Dispose();
-                //try
-                //{
-                //    //Close connection:
-                //    iedConnection.Close();
-                //}
-                //catch (Exception e)
-                //{
-                //    iedConnection.Dispose();
-                //    Console.WriteLine(e);
-                //}
+                try
+                {
+                    //libIEC61850: Dispose connection after use.
+                    iedConnection.Dispose();
+                }
+                catch (IedConnectionException e)
+                {
+                    Logger.Fatal($"Dispose Client Error: {e.GetIedClientError()}");
+                    Logger.Fatal($"Dispose Error Code: {e.GetErrorCode()}");
+                    Logger.Fatal($"Dispose IED Connection Exception: {e}");
+                }
+                catch (Exception e)
+                {
+                    Logger.Fatal(e);
+                }
+                Logger.Info($"{device} - Disconnected!");
             }
         }
 
         private static IEnumerable<(string, ulong, uint)> GetDownloadableFileList(IedConnection iedConnection, Device device, string directoryName)
         {
-            //TODO: Check device is still connected? or TryCatch;
-
             //Get Files from Device:
             var files = iedConnection.GetFileDirectory(directoryName);
 
-            //Init empty list:
             var downloadableFileList = new List<(string FileName, ulong CreationTime, uint FileSize)>();
 
+            var logDirectoryName = string.IsNullOrWhiteSpace(directoryName) ? "Root" : directoryName;
+            Logger.Trace($"{device} - List IED Files on: {logDirectoryName}");
+
             //Foreach file in the Device:
+            //Check if file is a directoty or a file
+            //If directory, recursive call with directory name
+            //If file, and a valid download extension, add file to downloadable list
             foreach (var file in files)
             {
                 var filename = file.GetFileName();
 
-                //TODO: Add a Logger for this >>
-                //List de device file:
-                Console.WriteLine($"{device.Name} - {directoryName}{filename}");
+                Logger.Trace($"{device} - {directoryName}{filename}");
 
-                //Check if file is a directoty or a file:
                 if (filename.IsDirectory())
                 {
-                    //If directory, recursive call with directory name:
                     downloadableFileList.AddRange(GetDownloadableFileList(iedConnection, device, directoryName + filename));
                 }
                 else
                 {
-                    //If file, and a valid download extension, add file to downloadable list:                    
                     if (filename.IsDownloadable())
                         downloadableFileList.Add((directoryName + filename, file.GetLastModified(), file.GetFileSize()));
                 }
@@ -187,7 +193,6 @@ namespace Ordos.IEDService.Services
 
         private static IEnumerable<(string, ulong, uint)> FilterExistingFiles(Device device, IEnumerable<(string FileName, ulong CreationTime, uint FileSize)> downloadableFileList)
         {
-            //Init empty list:
             var filteredDownloadableFileList = new List<(string FileName, ulong LastModifiedDate, uint FileSize)>();
 
             using (var context = new SystemContext())
@@ -198,64 +203,89 @@ namespace Ordos.IEDService.Services
                                     .ThenInclude(x => x.DRFiles)
                                  .FirstOrDefault(x => x.Id.Equals(device.Id));
 
-                //If not found, return empty list:
+                //If device not found, return empty list:
                 if (dev == null)
+                {
+                    Logger.Error($"{device} Not found on the DB");
                     return filteredDownloadableFileList;
+                }
 
+                //Get the list of all DRFiles in the downloadableFileList:
+                //If the ied already has that file (file.name && file.size) (should have it in the database), skip;
+                //otherwise add that file to the filtered download list:
                 var drFiles = dev.DisturbanceRecordings.SelectMany(x => x.DRFiles);
 
-                //Foreach file in the downloadableFileList:
                 foreach (var downloadableFile in downloadableFileList)
                 {
-                    //If the ied already has that file (should have it in the database), skip;
+                    Logger.Trace($"{device} - {downloadableFile}");
+
                     if (drFiles
                         .Any(x => x.FileName.Equals(downloadableFile.FileName.GetDestinationFilename())
-                             && x.FileSize.Equals(downloadableFile.FileSize)))
+                             && x.FileSize == downloadableFile.FileSize))
+                    {
+                        Logger.Trace($"{device} - File already in the DB");
                         continue;
+                    }
 
-                    //otherwise add that file to the filtered download list:
+                    Logger.Trace($"{device} - New file found!");
+
                     filteredDownloadableFileList.Add(downloadableFile);
                 }
             }
             return filteredDownloadableFileList;
         }
 
-        private static void DownloadComtradeFiles(IedConnection iedConnection, Device device, IEnumerable<(string FileName, ulong LastModifiedDate, uint FileSize)> downloadableFileList, bool deleteExistingDRs = false)
+        /// <summary>
+        /// Download each file in the download list.
+        /// </summary>
+        /// <param name="iedConnection"></param>
+        /// <param name="device"></param>
+        /// <param name="downloadableFileList"></param>
+        private static void DownloadComtradeFiles(IedConnection iedConnection, Device device, IEnumerable<(string fileName, ulong creationTime, uint fileSize)> downloadableFileList)
         {
-            //TODO: Check device is still connected? or TryCatch;
-
-            //For each file in the download list:
-            foreach (var (FileName, _, _) in downloadableFileList)
+            foreach (var (fileName, creationTime, fileSize) in downloadableFileList)
             {
+                Logger.Info($"{device} - Downloading file: {fileName} ({fileSize})");
                 //TODO: Check if the GetTemporaryDownloadPath works on both IEDs: 670, 615;
                 //var destinationFilename = PathService.GetTemporaryDownloadPath(device, FileName.ReplaceAltDirectorySeparator().CleanFileName());
-                var destinationFilename = PathService.GetTemporaryDownloadPath(device, FileName.GetDestinationFilename());
+                var destinationFilename = PathHelper.GetTemporaryDownloadPath(device, fileName.GetDestinationFilename());
 
                 using (var fs = new FileStream(destinationFilename, FileMode.Create, FileAccess.ReadWrite))
                 using (var w = new BinaryWriter(fs))
                 {
-                    iedConnection.GetFile(FileName, GetFileHandler, w);
+                    iedConnection.GetFile(fileName, GetFileHandler, w);
                 }
             }
         }
 
+        private static bool GetFileHandler(object parameter, byte[] data)
+        {
+            Logger.Trace($"Received {data.Length} bytes");
+            BinaryWriter binWriter = (BinaryWriter)parameter;
+            binWriter.Write(data);
+            return true;
+        }
+
+        /// <summary>
+        /// Will parse:
+        /// -> Read
+        /// -> Extract Trigger Date
+        /// -> Extract Trigger Length
+        /// -> Extract Trigger Channel
+        /// -> Group into a DisturbanceRecording
+        /// </summary>
+        /// <param name="device"></param>
+        /// <returns></returns>
         private static List<DisturbanceRecording> ParseTemporaryComtradeFiles(Device device)
         {
-            //Init empty list:
             var disturbanceRecordings = new List<DisturbanceRecording>();
+
+            Logger.Trace($"{device}");
 
             //Using the recently donwloaded files:
             //(Each temporary folder is unique for each IED)
-            var temporaryFolder = PathService.GetTemporaryDownloadFolder(device);
-
-            /* Will parse:
-             * -> Read 
-             * -> Extract Trigger Date 
-             * -> Extract Trigger Length 
-             * -> Extract Trigger Channel
-             * -> Group into a DisturbanceRecording
-             */
-
+            var temporaryFolder = PathHelper.GetTemporaryDownloadFolder(device);
+            
             //Every DR Zip file that contains multiple Single files:
             disturbanceRecordings.AddRange(ParseTemporaryZipFiles(temporaryFolder, device.Id));
 
@@ -274,7 +304,6 @@ namespace Ordos.IEDService.Services
             //Get zip files Collection;
             var zipFileList = new DirectoryInfo(temporaryFolder)
                 .EnumerateFiles("*.zip", SearchOption.AllDirectories);
-                
 
             return ComtradeExtensions.ParseZipFilesCollection(zipFileList, deviceId);
         }
@@ -299,42 +328,58 @@ namespace Ordos.IEDService.Services
                                     .ThenInclude(dr => dr.DRFiles)
                                  .FirstOrDefault(x => x.Id.Equals(device.Id));
 
+                //If device not found, return empty list:
+                if (dev == null)
+                {
+                    Logger.Error($"{device} Not found on the DB");
+                    return;
+                }
 
                 foreach (var item in temporaryComtradeFiles)
                 {
+                    Logger.Trace($"{device} - {item}");
                     dev.DisturbanceRecordings.Add(item);
                 }
 
                 context.SaveChanges();
             }
 
-            using (var context = new SystemContext())
-            {
-                //Get the DB device:
-                var dev = context.Devices
-                                 .Include(x => x.DisturbanceRecordings)
-                                    .ThenInclude(dr => dr.DRFiles)
-                                 .FirstOrDefault(x => x.Id.Equals(device.Id));
-            }
+            //using (var context = new SystemContext())
+            //{
+            //    //Get the DB device:
+            //    var dev = context.Devices
+            //                     .Include(x => x.DisturbanceRecordings)
+            //                        .ThenInclude(dr => dr.DRFiles)
+            //                     .FirstOrDefault(x => x.Id.Equals(device.Id));
+            //}
 
         }
 
         private static void ExportDisturbanceRecordings(Device device, List<DisturbanceRecording> temporaryComtradeFiles)
         {
-            var exportPath = PathService.GetDeviceExportFolder(device);
+            var exportPath = PathHelper.GetDeviceExportFolder(device);
 
             foreach (var item in temporaryComtradeFiles)
             {
+                Logger.Trace($"{device} - {item}");
+
                 var zipFilename = $"{item.TriggerTime.ToString("yyyyMMdd", CultureInfo.InvariantCulture)},{item.TriggerTime.ToString("hhmmssfff", CultureInfo.InvariantCulture)},{device.Bay},{device.Name}.zip";
-                var zipFileInfo = new FileInfo(PathService.ValidatePath(exportPath, zipFilename));
+                var zipFileInfo = new FileInfo(PathHelper.ValidatePath(exportPath, zipFilename));
 
                 if (zipFileInfo.Exists)
+                {
+                    Logger.Trace($"{device} - Zip file exists: {zipFilename}");
                     continue;
+                }
+
+                Logger.Trace($"{device} - Creating Zip file: {zipFilename}");
 
                 using (ZipArchive zip = ZipFile.Open(zipFileInfo.FullName, ZipArchiveMode.Update))
                 {
                     foreach (var drFile in item.DRFiles)
                     {
+                        Logger.Trace($"{device} - Adding {drFile} to Zip file: {zipFilename}");
+
                         var zipEntry = zip.CreateEntry(drFile.FileName);
                         //Get the stream of the attachment
                         using (var originalFileStream = new MemoryStream(drFile.FileData))
@@ -346,21 +391,6 @@ namespace Ordos.IEDService.Services
                     }
                 }
             }
-        }
-
-        private static void RemoveTemporaryFiles(Device device)
-        {
-            //Delete the donwloaded file folder and recursive files:
-            var temporaryFolder = PathService.GetTemporaryDownloadFolder(device);
-            Directory.Delete(temporaryFolder, true);
-        }
-
-        private static bool GetFileHandler(object parameter, byte[] data)
-        {
-            Console.WriteLine("received " + data.Length + " bytes");
-            BinaryWriter binWriter = (BinaryWriter)parameter;
-            binWriter.Write(data);
-            return true;
         }
 
         void IConnectionService.GetComtrades()

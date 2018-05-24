@@ -13,6 +13,8 @@ namespace Ordos.Server
     {
         public static void Main(string[] args)
         {
+            NLog.LogManager.Configuration.Variables["logDirectory"] = PathHelper.ExportRoot;
+
             var host = BuildWebHost(args);
 
             using (var scope = host.Services.CreateScope())

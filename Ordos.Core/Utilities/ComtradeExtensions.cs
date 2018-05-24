@@ -10,6 +10,8 @@ namespace Ordos.Core.Utilities
 {
     public static class ComtradeExtensions
     {
+        private static NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public static string ComtradeDatetimeFormat { get; } = "dd/MM/yyyy,HH:mm:ss.ffffff";
 
         public static (bool TryParse, DateTime DateTime) TryParseDRDate(string datetime)
@@ -20,28 +22,31 @@ namespace Ordos.Core.Utilities
 
         public static List<DisturbanceRecording> ParseZipFilesCollection(IEnumerable<FileInfo> fileInfoCollection, int deviceId)
         {
-            //Init empty list;
             var disturbanceRecordings = new List<DisturbanceRecording>();
 
-            //Iterate over each zip file.
-            //Each zip file should be a DisturbanceRecording;
+            //Iterate over each ZIP file. Each ZIP file should be a DisturbanceRecording;
             foreach (var zipFileInfo in fileInfoCollection)
             {
                 using (var zipFile = ZipFile.OpenRead(zipFileInfo.FullName))
                 {
-                    //Init Empty DR;
                     var dr = new DisturbanceRecording { DeviceId = deviceId };
 
                     //Parse DR Group:
                     var drFiles = ParseDRZipGroup(zipFile.Entries);
 
+                    //Only create a dr if it has any files on it
                     if (drFiles.Count > 0)
                     {
                         dr.DRFiles.AddRange(drFiles);
+
+                        //When zipFile, internal names could be anything. Use zipfile instead.
                         dr.Name = zipFileInfo.Name.GetNameWithoutExtension();
+
+                        //They all (should) have the same date
                         dr.TriggerTime = drFiles.FirstOrDefault().CreationTime;
 
-                        //Add the DR to the collection:
+                        Logger.Trace($"{dr}");
+
                         disturbanceRecordings.Add(dr);
                     }
                 }
@@ -51,30 +56,35 @@ namespace Ordos.Core.Utilities
 
         public static IEnumerable<DisturbanceRecording> ParseSingleFilesCollection(IEnumerable<FileInfo> fileInfoCollection, int deviceId)
         {
-            //Init empty list;
             var disturbanceRecordings = new List<DisturbanceRecording>();
 
-            //Group files by their name. At least in some Tested IEDs,
-            //DR Files all have the same name.
+            //Group files by their name. 
+            //When not zipped, DR Files all have the same name.
             var drFileGroups = fileInfoCollection.GroupBy(x => x.Name.GetNameWithoutExtension());
 
-            //Iterate over each file group.
-            //Each file group should be a DisturbanceRecording;
+            //Iterate over each file group. Each file group should be a DisturbanceRecording;
             foreach (var drFileGroup in drFileGroups)
             {
-                //Init Empty DR;
+                Logger.Trace($"Device Id: {deviceId} - drName: {drFileGroup.Key}");
+
                 var dr = new DisturbanceRecording { DeviceId = deviceId };
 
                 //Parse DR Group:
                 var drFiles = ParseDRFilesGroup(drFileGroup);
 
+                //Only create a dr if it has any files on it
                 if (drFiles.Count > 0)
                 {
                     dr.DRFiles.AddRange(drFiles);
+
+                    //Use Group.Key as DR Name
                     dr.Name = drFileGroup.Key;
+
+                    //They all (should) have the same date
                     dr.TriggerTime = drFiles.FirstOrDefault().CreationTime;
 
-                    //Add the DR to the collection:
+                    Logger.Trace($"{dr}");
+
                     disturbanceRecordings.Add(dr);
                 }
             }
@@ -84,79 +94,85 @@ namespace Ordos.Core.Utilities
         public static List<DRFile> ParseDRZipGroup(IEnumerable<ZipArchiveEntry> zippedFiles)
         {
             var list = new List<DRFile>();
+
+            //Only the CFG files contain TriggerTime, parse them first;
             zippedFiles = zippedFiles.OrderByDescending(x => x.Name.IsExtension(FileNameExtensions.CFGExtension));
 
-            //Create Temporary variable to store the trigger Time;
+            //Fallback DateTime
             var creationTime = DateTime.Now;
 
-            foreach (var zippedItem in zippedFiles.Where(x=>x.Name.IsPartOfDisturbanceRecording()))
+            foreach (var zipFileEntry in zippedFiles.Where(x=>x.Name.IsPartOfDisturbanceRecording()))
             {
+                Logger.Trace($"{zipFileEntry.Name}");
+
                 //Add filedata to the DRFile;
                 var fileData = Array.Empty<byte>();
                 var triggerDate = DateTime.Now;
                 using (MemoryStream ms = new MemoryStream())
                 {
-                    zippedItem.Open().CopyTo(ms);
+                    zipFileEntry.Open().CopyTo(ms);
                     fileData = ms.ToArray();
                 }
 
-                //Get Comtrade Data;
-                if (zippedItem.Name.IsExtension(FileNameExtensions.CFGExtension))
+                //Only the CFG files contain TriggerTime;
+                if (zipFileEntry.Name.IsExtension(FileNameExtensions.CFGExtension))
                 {
-                    var cfgContents = ReadLines(zippedItem.Open(), Encoding.UTF8);
+                    var cfgContents = ReadLines(zipFileEntry.Open(), Encoding.UTF8);
                     creationTime = GetTriggerDateTime(cfgContents);
-
-                    //TODO: Add TriggerLength; Add TriggerChannel
-                    //dr.TriggerLength = ComtradeExtensions.GetDRTriggerLength(cfgContents);
-                    //dr.TriggerChannel = ComtradeExtensions.GetDRTriggerChannel(cfgContents);
                 }
 
                 //Init the DRFile;
                 var drFile = new DRFile
                 {
-                    FileName = zippedItem.Name,
-                    FileSize = zippedItem.Length,
+                    FileName = zipFileEntry.Name,
+                    FileSize = zipFileEntry.Length,
                     //DisturbanceRecordingId = dr.Id,
                     CreationTime = creationTime,
                     FileData = fileData,
                 };
+
+                Logger.Trace($"{drFile}");
+
                 list.Add(drFile);
             }
             return list;
         }
 
-        public static List<DRFile> ParseDRFilesGroup(IEnumerable<FileInfo> drFilenamesGroup)
+        public static List<DRFile> ParseDRFilesGroup(IEnumerable<FileInfo> drFileInfos)
         {
             var list = new List<DRFile>();
-            drFilenamesGroup = drFilenamesGroup.OrderByDescending(x => x.Name.IsExtension(FileNameExtensions.CFGExtension));
 
-            //Create Temporary variable to store the trigger Time;
+            //Only the CFG files contain TriggerTime, parse them first;
+            drFileInfos = drFileInfos.OrderByDescending(x => x.Name.IsExtension(FileNameExtensions.CFGExtension));
+
+            //Fallback DateTime
             var creationTime = DateTime.Now;
 
-            foreach (var groupItem in drFilenamesGroup)
+            foreach (var fileInfo in drFileInfos)
             {
+                Logger.Trace($"{fileInfo.Name}");
+
                 //Add filedata to the DRFile;
-                var fileData = File.ReadAllBytes(groupItem.FullName);
+                var fileData = File.ReadAllBytes(fileInfo.FullName);
 
-                //Get Comtrade Data;
-                if (groupItem.Name.IsExtension(FileNameExtensions.CFGExtension))
+                //Only the CFG files contain TriggerTime;
+                if (fileInfo.Name.IsExtension(FileNameExtensions.CFGExtension))
                 {
-                    creationTime = GetTriggerDateTime(groupItem.FullName);
-
-                    //TODO: Add TriggerLength; Add TriggerChannel
-                    //dr.TriggerLength = ComtradeExtensions.GetDRTriggerLength(cfgContents);
-                    //dr.TriggerChannel = ComtradeExtensions.GetDRTriggerChannel(cfgContents);
+                    creationTime = GetTriggerDateTime(fileInfo.FullName);
                 }
 
                 //Init the DRFile;
                 var drFile = new DRFile
                 {
-                    FileName = groupItem.Name,
-                    FileSize = groupItem.Length,
+                    FileName = fileInfo.Name,
+                    FileSize = fileInfo.Length,
                     //DisturbanceRecordingId = dr.Id,
                     CreationTime = creationTime,
                     FileData = fileData,
                 };
+
+                Logger.Trace($"{drFile}");
+
                 list.Add(drFile);
             }
             return list;

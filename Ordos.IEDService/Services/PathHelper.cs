@@ -6,11 +6,11 @@ using Ordos.DataService.Services;
 
 namespace Ordos.IEDService.Services
 {
-    public static class PathService
+    public static class PathHelper
     {
         private static string DRMFolder => @"Ordos";
 
-        internal static string ExportRoot
+        public static string ExportRoot
         {
             get
             {
@@ -54,6 +54,13 @@ namespace Ordos.IEDService.Services
         {
             var path = GetDeviceExportFolder(device);
             return ValidatePath(path, filename);
+        }
+
+        internal static void RemoveTemporaryFiles(Device device)
+        {
+            //Delete the donwloaded file folder and recursive files:
+            var temporaryFolder = GetTemporaryDownloadFolder(device);
+            Directory.Delete(temporaryFolder, true);
         }
     }
 }

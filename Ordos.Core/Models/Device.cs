@@ -53,6 +53,8 @@ namespace Ordos.Core.Models
         [NotMapped]
         [Display(Name = "IED")]
         public string FullName => $"{Station} - {Bay} - {Name}";
+
+        public override string ToString() => FullName;
     }
 }
 
