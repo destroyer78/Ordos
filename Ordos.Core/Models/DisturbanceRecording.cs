@@ -21,13 +21,17 @@ namespace Ordos.Core.Models
         public ICollection<DRFile> DRFiles { get; set; }
 
         [Required]
+        [Display(Name = "Nombre")]
         public string Name { get; set; }
 
         [Required]
+        [Display(Name = "Trigger Start")]
         public DateTime TriggerTime { get; set; }
 
+        [Display(Name = "Trigger Length")]
         public double TriggerLength { get; set; }
 
+        [Display(Name = "Trigger Channel")]
         public string TriggerChannel { get; set; }
     }
 }
