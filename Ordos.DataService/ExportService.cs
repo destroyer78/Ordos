@@ -1,4 +1,5 @@
 ﻿using Ordos.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -11,54 +12,73 @@ namespace Ordos.DataService
     {
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public static void ExportDisturbanceRecordings(Device device, List<DisturbanceRecording> temporaryComtradeFiles, bool overwriteExisting = false)
+        public static string GetZipFileName(string deviceName, string deviceBay, DateTime triggerDateTime)
+        {
+            return $"{triggerDateTime.ToString("yyyyMMdd,HHmmssfff", CultureInfo.InvariantCulture)},{deviceBay},{deviceName}.zip";
+        }
+
+        public static string GetZipFileName(Device device, DisturbanceRecording dr)
+        {
+            return GetZipFileName(device.Name, device.Bay, dr.TriggerTime);
+        }
+
+        public static void ExportDisturbanceRecordings(Device device, List<DisturbanceRecording> comtradeFiles, bool overwriteExisting = false)
         {
             var exportPath = PathHelper.GetDeviceExportFolder(device);
 
-            foreach (var item in temporaryComtradeFiles)
-            {
-                Logger.Trace($"Export DR: {device} - {item}");
+            ExportDisturbanceRecordings(exportPath, device.Name, device.Bay, comtradeFiles, overwriteExisting);
+        }
 
-                var zipFilename = $"{item.TriggerTime.ToString("yyyyMMdd", CultureInfo.InvariantCulture)},{item.TriggerTime.ToString("hhmmssfff", CultureInfo.InvariantCulture)},{device.Bay},{device.Name}.zip";
+        public static void ExportDisturbanceRecordings(string exportPath, string deviceName, string deviceBay, List<DisturbanceRecording> comtradeFiles, bool overwriteExisting = false)
+        {
+            foreach (var item in comtradeFiles)
+            {
+                Logger.Trace($"Export DR: {deviceName} - {item}");
+
+                var zipFilename = GetZipFileName(deviceName, deviceBay, item.TriggerTime);
                 var zipFileInfo = new FileInfo(PathHelper.GetOrCreateValidPath(exportPath, zipFilename));
 
-                if (zipFileInfo.Exists || !overwriteExisting)
+                if (zipFileInfo.Exists && !overwriteExisting)
                 {
-                    Logger.Trace($"{device} - Zip file exists: {zipFilename}");
+                    Logger.Trace($"{deviceName} - Zip file exists: {zipFilename}");
                     continue;
                 }
 
-                Logger.Trace($"{device} - Creating Zip file: {zipFilename}");
+                Logger.Trace($"{deviceName} - Creating Zip file: {zipFilename}");
 
                 using (ZipArchive zip = ZipFile.Open(zipFileInfo.FullName, ZipArchiveMode.Update))
                 {
                     foreach (var drFile in item.DRFiles)
                     {
-                        Logger.Trace($"{device} - Adding {drFile} to Zip file: {zipFilename}");
-
-                        var fileInZip = zip.Entries.Where(x => x.Name.Equals(drFile.FileName)).FirstOrDefault();
-
-                        ZipArchiveEntry zipEntry;
-
-                        if (fileInZip != null)
-                        {
-                            fileInZip.Delete();
-                            zipEntry = zip.CreateEntry(drFile.FileName);
-                        }
-                        else
-                        {
-                            zipEntry = zip.CreateEntry(drFile.FileName);
-                        }
-
-                        //Get the stream of the attachment
-                        using (var originalFileStream = new MemoryStream(drFile.FileData))
-                        using (var zipEntryStream = zipEntry.Open())
-                        {
-                            //Copy the attachment stream to the zip entry stream
-                            originalFileStream.CopyTo(zipEntryStream);
-                        }
+                        Logger.Trace($"{deviceName} - Adding {drFile} to Zip file: {zipFilename}");
+                        AddDRtoZipFile(zip, drFile);
                     }
                 }
+            }
+        }
+
+        private static void AddDRtoZipFile(ZipArchive zip, DRFile drFile)
+        {
+            var fileInZip = zip.Entries.Where(x => x.Name.Equals(drFile.FileName)).FirstOrDefault();
+
+            ZipArchiveEntry zipEntry;
+
+            if (fileInZip != null)
+            {
+                fileInZip.Delete();
+                zipEntry = zip.CreateEntry(drFile.FileName);
+            }
+            else
+            {
+                zipEntry = zip.CreateEntry(drFile.FileName);
+            }
+
+            //Get the stream of the attachment
+            using (var originalFileStream = new MemoryStream(drFile.FileData))
+            using (var zipEntryStream = zipEntry.Open())
+            {
+                //Copy the attachment stream to the zip entry stream
+                originalFileStream.CopyTo(zipEntryStream);
             }
         }
     }
