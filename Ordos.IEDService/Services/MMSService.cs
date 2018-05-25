@@ -370,9 +370,7 @@ namespace Ordos.IEDService.Services
                     {
                         Logger.Trace($"{device} - Adding {drFile} to Zip file: {zipFilename}");
 
-                        var fileInZip = (from f in zip.Entries
-                                         where f.Name == Path.GetFileName(drFile.FileName)
-                                         select f).FirstOrDefault();
+                        var fileInZip = zip.Entries.Where(x => x.Name.Equals(drFile.FileName)).FirstOrDefault();
 
                         ZipArchiveEntry zipEntry;
 
