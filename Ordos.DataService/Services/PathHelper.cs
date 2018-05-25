@@ -1,13 +1,28 @@
 ﻿using Ordos.Core.Models;
-using System;
 using System.IO;
 using Ordos.Core.Utilities;
-using Ordos.DataService.Services;
+using System;
 
-namespace Ordos.IEDService.Services
+namespace Ordos.DataService.Services
 {
     public static class PathHelper
     {
+        public static string GetDeviceSpecificFolder(Device device)
+        {
+            return Path.Combine(DatabaseService.CompanyName, device.Station.CleanFileName(), device.Bay.CleanFileName(), device.Name.CleanFileName(), "Oscilografias");
+        }
+
+        public static string GetDeviceExportFolder(Device device)
+        {
+            return Path.Combine(PathHelper.ExportRoot, GetDeviceSpecificFolder(device));
+        }
+
+        public static string GetDeviceExportPath(Device device, string filename)
+        {
+            var path = GetDeviceExportFolder(device);
+            return PathHelper.ValidatePath(path, filename);
+        }
+
         private static string DRMFolder => @"Ordos";
 
         public static string ExportRoot
@@ -19,12 +34,7 @@ namespace Ordos.IEDService.Services
             }
         }
 
-        internal static string GetDeviceSpecificFolder(Device device)
-        {
-            return Path.Combine(DatabaseService.CompanyName, device.Station.CleanFileName(), device.Bay.CleanFileName(), device.Name.CleanFileName(), "Oscilografias");
-        }
-
-        internal static string ValidatePath(string path, string filename)
+        public static string ValidatePath(string path, string filename)
         {
             var fileInfo = new FileInfo(Path.Combine(path, filename));
 
@@ -34,25 +44,14 @@ namespace Ordos.IEDService.Services
             return fileInfo.FullName;
         }
 
-        internal static string GetDeviceExportFolder(Device device)
-        {
-            return Path.Combine(ExportRoot, GetDeviceSpecificFolder(device));
-        }
-
-        internal static string GetTemporaryDownloadFolder(Device device)
+        public static string GetTemporaryDownloadFolder(Device device)
         {
             return Path.Combine(Path.GetTempPath(), DRMFolder, device.Station.CleanFileName(), device.Bay.CleanFileName(), device.Name.CleanFileName());
         }
 
-        internal static string GetTemporaryDownloadPath(Device device, string filename)
+        public static string GetTemporaryDownloadPath(Device device, string filename)
         {
             var path = GetTemporaryDownloadFolder(device);
-            return ValidatePath(path, filename);
-        }
-
-        internal static string GetDeviceExportPath(Device device, string filename)
-        {
-            var path = GetDeviceExportFolder(device);
             return ValidatePath(path, filename);
         }
 
@@ -60,7 +59,7 @@ namespace Ordos.IEDService.Services
         /// Delete the donwloaded file folder and recursive files
         /// </summary>
         /// <param name="device">Device to take the Station, Bay, DeviceName</param>
-        internal static void RemoveTemporaryFiles(Device device)
+        public static void RemoveTemporaryFiles(Device device)
         {
             var temporaryFolder = GetTemporaryDownloadFolder(device);
             Directory.Delete(temporaryFolder, true);

@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Ordos.Core.Utilities
 {
-    public static class ComtradeExtensions
+    public static class ComtradeHelper
     {
         private static NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -18,6 +18,42 @@ namespace Ordos.Core.Utilities
         {
             var tryParse = DateTime.TryParseExact(datetime, ComtradeDatetimeFormat, null, System.Globalization.DateTimeStyles.None, out DateTime result);
             return (tryParse, result);
+        }
+
+        /// <summary>
+        /// Will parse:
+        /// -> Read
+        /// -> Extract Trigger Date
+        /// -> Extract Trigger Length
+        /// -> Extract Trigger Channel
+        /// -> Group into a DisturbanceRecording
+        /// </summary>
+        /// <param name="device"></param>
+        /// <returns></returns>
+        public static List<DisturbanceRecording> ParseComtradeFiles(Device device, string comtradeFileFolderPath)
+        {
+            var disturbanceRecordings = new List<DisturbanceRecording>();
+
+            Logger.Trace($"{device}");
+
+            //Every DR Zip file that contains multiple Single files:
+            var zipFileList = new DirectoryInfo(comtradeFileFolderPath)
+                .EnumerateFiles("*.zip", SearchOption.AllDirectories);
+
+            disturbanceRecordings.AddRange(ParseZipFilesCollection(zipFileList, device.Id));
+
+            //Get all non-ZIP files Collection (Single files);
+            var drFileList = new DirectoryInfo(comtradeFileFolderPath)
+                                    .EnumerateFiles("*.*", SearchOption.AllDirectories)
+                                    .Where(x => x.Name.IsPartOfDisturbanceRecording());
+
+            disturbanceRecordings.AddRange(ParseSingleFilesCollection(drFileList, device.Id));
+
+            //TODO: Test, pero en todo caso, sacar todos los que tengan un size = 0;
+            //Un caso particular es que no se descarga el contenido de las DR, el archivo queda en 0;
+            disturbanceRecordings.RemoveAll(x => x.DRFiles.Any(y => y.FileSize.Equals(0)));
+
+            return disturbanceRecordings;
         }
 
         public static List<DisturbanceRecording> ParseZipFilesCollection(IEnumerable<FileInfo> fileInfoCollection, int deviceId)

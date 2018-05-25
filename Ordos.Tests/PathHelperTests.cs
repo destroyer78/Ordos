@@ -1,4 +1,4 @@
-﻿using Ordos.IEDService.Services;
+﻿using Ordos.DataService.Services;
 using Xunit;
 
 namespace Ordos.Tests

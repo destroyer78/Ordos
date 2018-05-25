@@ -15,7 +15,7 @@ namespace Ordos.Tests
                 .EnumerateFiles("*.*", SearchOption.AllDirectories)
                 .Where(x => x.Name.IsPartOfDisturbanceRecording());
 
-            var disturbanceRecordings = ComtradeExtensions.ParseSingleFilesCollection(drFileList, 1);
+            var disturbanceRecordings = ComtradeHelper.ParseSingleFilesCollection(drFileList, 1);
 
             Assert.NotEmpty(disturbanceRecordings);
 
@@ -52,7 +52,7 @@ namespace Ordos.Tests
                 .EnumerateFiles("*.zip", SearchOption.AllDirectories)
                 .Where(x => x.Name.IsDownloadable());
 
-            var disturbanceRecordings = ComtradeExtensions.ParseZipFilesCollection(drFileList, 1);
+            var disturbanceRecordings = ComtradeHelper.ParseZipFilesCollection(drFileList, 1);
 
             Assert.NotEmpty(disturbanceRecordings);
 

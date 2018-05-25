@@ -17,7 +17,7 @@ namespace Ordos.Tests
         {
             var filename = "./Resources/Single1.CFG";
             using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
-                Assert.NotNull(ComtradeExtensions.ReadLines(stream, Encoding.UTF8));
+                Assert.NotNull(ComtradeHelper.ReadLines(stream, Encoding.UTF8));
         }
 
         [Fact]
@@ -25,7 +25,7 @@ namespace Ordos.Tests
         {
             var filename = "./Resources/Single1.CFG";
             using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
-                Assert.Equal(73, ComtradeExtensions.ReadLines(stream, Encoding.UTF8).ToList().Count);
+                Assert.Equal(73, ComtradeHelper.ReadLines(stream, Encoding.UTF8).ToList().Count);
         }
 
         [Fact]
@@ -33,7 +33,7 @@ namespace Ordos.Tests
         {
             var filename = "./Resources/EmptyFile.CFG";
             using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
-                Assert.Empty(ComtradeExtensions.ReadLines(stream, Encoding.UTF8).ToList());
+                Assert.Empty(ComtradeHelper.ReadLines(stream, Encoding.UTF8).ToList());
         }
 
         //GetDRDateTimes
@@ -41,14 +41,14 @@ namespace Ordos.Tests
         public void TestTestGetDRDateTimeEmpty()
         {
             var filename = "./Resources/EmptyFile.CFG";
-            Assert.Single(ComtradeExtensions.GetDRDateTimes(filename));
+            Assert.Single(ComtradeHelper.GetDRDateTimes(filename));
         }
 
         [Fact]
         public void TestGetDRDateTimeCount()
         {
             var filename = "./Resources/Single1.CFG";
-            Assert.Equal(2, ComtradeExtensions.GetDRDateTimes(filename).Count());
+            Assert.Equal(2, ComtradeHelper.GetDRDateTimes(filename).Count());
         }
 
         //GetTriggerDateTime
@@ -56,16 +56,16 @@ namespace Ordos.Tests
         public void TestGetTriggerDateTime()
         {
             var filename = "./Resources/Single1.CFG";
-            Assert.Equal(ComtradeExtensions.TryParseDRDate("05/04/2018,13:45:38.404284").DateTime, ComtradeExtensions.GetTriggerDateTime(filename));
-            Assert.Equal(5, ComtradeExtensions.GetTriggerDateTime(filename).Day);
-            Assert.Equal(4, ComtradeExtensions.GetTriggerDateTime(filename).Month);
+            Assert.Equal(ComtradeHelper.TryParseDRDate("05/04/2018,13:45:38.404284").DateTime, ComtradeHelper.GetTriggerDateTime(filename));
+            Assert.Equal(5, ComtradeHelper.GetTriggerDateTime(filename).Day);
+            Assert.Equal(4, ComtradeHelper.GetTriggerDateTime(filename).Month);
         }
 
         [Fact]
         public void TestGetTriggerDateTimeEmpty()
         {
             var filename = "./Resources/EmptyFile.CFG";
-            Assert.Equal(DateTime.Now.ToShortDateString(), ComtradeExtensions.GetTriggerDateTime(filename).ToShortDateString());
+            Assert.Equal(DateTime.Now.ToShortDateString(), ComtradeHelper.GetTriggerDateTime(filename).ToShortDateString());
         }
 
         //Parse Zip File
@@ -77,7 +77,7 @@ namespace Ordos.Tests
             {
                 var zipEntries = zipFile.Entries;
 
-                var drFiles = ComtradeExtensions.ParseDRZipGroup(zipEntries);
+                var drFiles = ComtradeHelper.ParseDRZipGroup(zipEntries);
 
                 Assert.NotEmpty(drFiles);
                 Assert.Equal(2, drFiles.Count());
@@ -93,7 +93,7 @@ namespace Ordos.Tests
                     Assert.NotEmpty(item.FileData);
                     Assert.True(item.FileData.Length > 1);
 
-                    Assert.Equal(ComtradeExtensions.TryParseDRDate("04/04/2018,13:45:38.404284").DateTime, item.CreationTime);
+                    Assert.Equal(ComtradeHelper.TryParseDRDate("04/04/2018,13:45:38.404284").DateTime, item.CreationTime);
                 }
             }
         }
@@ -106,7 +106,7 @@ namespace Ordos.Tests
             {
                 var zipEntries = zipFile.Entries;
 
-                var drFiles = ComtradeExtensions.ParseDRZipGroup(zipEntries);
+                var drFiles = ComtradeHelper.ParseDRZipGroup(zipEntries);
 
                 Assert.NotEmpty(drFiles);
                 Assert.Equal(3, drFiles.Count());
@@ -122,7 +122,7 @@ namespace Ordos.Tests
                     Assert.NotEmpty(item.FileData);
                     Assert.True(item.FileData.Length > 1);
 
-                    Assert.Equal(ComtradeExtensions.TryParseDRDate("20/07/2016,10:09:14.760712").DateTime, item.CreationTime);
+                    Assert.Equal(ComtradeHelper.TryParseDRDate("20/07/2016,10:09:14.760712").DateTime, item.CreationTime);
                 }
             }
         }
@@ -136,7 +136,7 @@ namespace Ordos.Tests
                 new FileInfo("./Resources/Single1.DAT")
             };
 
-            var drFiles = ComtradeExtensions.ParseDRFilesGroup(filenames);
+            var drFiles = ComtradeHelper.ParseDRFilesGroup(filenames);
 
             Assert.NotEmpty(drFiles);
             Assert.Equal(2, drFiles.Count());
@@ -152,7 +152,7 @@ namespace Ordos.Tests
                 Assert.NotEmpty(item.FileData);
                 Assert.True(item.FileData.Length > 1);
 
-                Assert.Equal(ComtradeExtensions.TryParseDRDate("05/04/2018,13:45:38.404284").DateTime, item.CreationTime);
+                Assert.Equal(ComtradeHelper.TryParseDRDate("05/04/2018,13:45:38.404284").DateTime, item.CreationTime);
             }
         }
 
@@ -165,7 +165,7 @@ namespace Ordos.Tests
                 .Where(x => !x.Name.Contains("Empty"))
                 .Where(x => x.Name.IsPartOfDisturbanceRecording());
 
-            var disturbanceRecordings = ComtradeExtensions.ParseSingleFilesCollection(drFileList, 1);
+            var disturbanceRecordings = ComtradeHelper.ParseSingleFilesCollection(drFileList, 1);
 
             Assert.NotEmpty(disturbanceRecordings);
             Assert.Equal(2, disturbanceRecordings.Count());
@@ -203,7 +203,7 @@ namespace Ordos.Tests
                 .EnumerateFiles("*.zip", SearchOption.AllDirectories)
                 .Where(x => x.Name.IsDownloadable()); 
 
-            var disturbanceRecordings = ComtradeExtensions.ParseZipFilesCollection(drFileList, 1);
+            var disturbanceRecordings = ComtradeHelper.ParseZipFilesCollection(drFileList, 1);
 
             Assert.NotEmpty(disturbanceRecordings);
             Assert.Equal(2, disturbanceRecordings.Count());

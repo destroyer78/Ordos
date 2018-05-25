@@ -107,8 +107,11 @@ namespace Ordos.IEDService.Services
                     DownloadComtradeFiles(iedConnection, device, filteredDownloadableFileList);
 
                     Logger.Info($"{device} - Reading files");
-
-                    var temporaryComtradeFiles = ParseTemporaryComtradeFiles(device);
+                    
+                    //Using the recently donwloaded files:
+                    //(Each temporary folder is unique for each IED)
+                    var temporaryFolder = PathHelper.GetTemporaryDownloadFolder(device);
+                    var temporaryComtradeFiles = ComtradeHelper.ParseComtradeFiles(device, temporaryFolder);
 
                     Logger.Info($"{device} - Saving files to the DB");
 
@@ -116,7 +119,7 @@ namespace Ordos.IEDService.Services
 
                     Logger.Info($"{device} - Exporting files");
 
-                    ExportDisturbanceRecordings(device, temporaryComtradeFiles);
+                    ExportService.ExportDisturbanceRecordings(device, temporaryComtradeFiles);
 
                     Logger.Info($"{device} - Removing temporary files");
 
@@ -266,58 +269,6 @@ namespace Ordos.IEDService.Services
             return true;
         }
 
-        /// <summary>
-        /// Will parse:
-        /// -> Read
-        /// -> Extract Trigger Date
-        /// -> Extract Trigger Length
-        /// -> Extract Trigger Channel
-        /// -> Group into a DisturbanceRecording
-        /// </summary>
-        /// <param name="device"></param>
-        /// <returns></returns>
-        private static List<DisturbanceRecording> ParseTemporaryComtradeFiles(Device device)
-        {
-            var disturbanceRecordings = new List<DisturbanceRecording>();
-
-            Logger.Trace($"{device}");
-
-            //Using the recently donwloaded files:
-            //(Each temporary folder is unique for each IED)
-            var temporaryFolder = PathHelper.GetTemporaryDownloadFolder(device);
-
-            //Every DR Zip file that contains multiple Single files:
-            disturbanceRecordings.AddRange(ParseTemporaryZipFiles(temporaryFolder, device.Id));
-
-            //And every single file:
-            disturbanceRecordings.AddRange(ParseTemporarySingleFiles(temporaryFolder, device.Id));
-
-            //TODO: Test, pero en todo caso, sacar todos los que tengan un size = 0;
-            //Un caso particular es que no se descarga el contenido de las DR, el archivo queda en 0;
-            disturbanceRecordings.RemoveAll(x => x.DRFiles.Any(y => y.FileSize.Equals(0)));
-
-            return disturbanceRecordings;
-        }
-
-        private static List<DisturbanceRecording> ParseTemporaryZipFiles(string temporaryFolder, int deviceId)
-        {
-            //Get zip files Collection;
-            var zipFileList = new DirectoryInfo(temporaryFolder)
-                .EnumerateFiles("*.zip", SearchOption.AllDirectories);
-
-            return ComtradeExtensions.ParseZipFilesCollection(zipFileList, deviceId);
-        }
-
-        private static IEnumerable<DisturbanceRecording> ParseTemporarySingleFiles(string temporaryFolder, int deviceId)
-        {
-            //Get all non-ZIP files Collection;
-            var drFileList = new DirectoryInfo(temporaryFolder)
-                                    .EnumerateFiles("*.*", SearchOption.AllDirectories)
-                                    .Where(x => x.Name.IsPartOfDisturbanceRecording());
-
-            return ComtradeExtensions.ParseSingleFilesCollection(drFileList, deviceId);
-        }
-
         private static void StoreComtradeFilesToDatabase(Device device, List<DisturbanceRecording> temporaryComtradeFiles)
         {
             using (var context = new SystemContext())
@@ -342,57 +293,6 @@ namespace Ordos.IEDService.Services
                 }
 
                 context.SaveChanges();
-            }
-        }
-
-        private static void ExportDisturbanceRecordings(Device device, List<DisturbanceRecording> temporaryComtradeFiles, bool overwriteExisting = false)
-        {
-            var exportPath = PathHelper.GetDeviceExportFolder(device);
-
-            foreach (var item in temporaryComtradeFiles)
-            {
-                Logger.Trace($"Export DR: {device} - {item}");
-
-                var zipFilename = $"{item.TriggerTime.ToString("yyyyMMdd", CultureInfo.InvariantCulture)},{item.TriggerTime.ToString("hhmmssfff", CultureInfo.InvariantCulture)},{device.Bay},{device.Name}.zip";
-                var zipFileInfo = new FileInfo(PathHelper.ValidatePath(exportPath, zipFilename));
-
-                if (zipFileInfo.Exists || !overwriteExisting)
-                {
-                    Logger.Trace($"{device} - Zip file exists: {zipFilename}");
-                    continue;
-                }
-
-                Logger.Trace($"{device} - Creating Zip file: {zipFilename}");
-
-                using (ZipArchive zip = ZipFile.Open(zipFileInfo.FullName, ZipArchiveMode.Update))
-                {
-                    foreach (var drFile in item.DRFiles)
-                    {
-                        Logger.Trace($"{device} - Adding {drFile} to Zip file: {zipFilename}");
-
-                        var fileInZip = zip.Entries.Where(x => x.Name.Equals(drFile.FileName)).FirstOrDefault();
-
-                        ZipArchiveEntry zipEntry;
-
-                        if (fileInZip != null)
-                        {
-                            fileInZip.Delete();
-                            zipEntry = zip.CreateEntry(drFile.FileName);
-                        }
-                        else
-                        {
-                            zipEntry = zip.CreateEntry(drFile.FileName);
-                        }
-
-                        //Get the stream of the attachment
-                        using (var originalFileStream = new MemoryStream(drFile.FileData))
-                        using (var zipEntryStream = zipEntry.Open())
-                        {
-                            //Copy the attachment stream to the zip entry stream
-                            originalFileStream.CopyTo(zipEntryStream);
-                        }
-                    }
-                }
             }
         }
 
