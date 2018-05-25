@@ -285,7 +285,7 @@ namespace Ordos.IEDService.Services
             //Using the recently donwloaded files:
             //(Each temporary folder is unique for each IED)
             var temporaryFolder = PathHelper.GetTemporaryDownloadFolder(device);
-            
+
             //Every DR Zip file that contains multiple Single files:
             disturbanceRecordings.AddRange(ParseTemporaryZipFiles(temporaryFolder, device.Id));
 
@@ -345,18 +345,18 @@ namespace Ordos.IEDService.Services
             }
         }
 
-        private static void ExportDisturbanceRecordings(Device device, List<DisturbanceRecording> temporaryComtradeFiles)
+        private static void ExportDisturbanceRecordings(Device device, List<DisturbanceRecording> temporaryComtradeFiles, bool overwriteExisting = false)
         {
             var exportPath = PathHelper.GetDeviceExportFolder(device);
 
             foreach (var item in temporaryComtradeFiles)
             {
-                Logger.Trace($"{device} - {item}");
+                Logger.Trace($"Export DR: {device} - {item}");
 
                 var zipFilename = $"{item.TriggerTime.ToString("yyyyMMdd", CultureInfo.InvariantCulture)},{item.TriggerTime.ToString("hhmmssfff", CultureInfo.InvariantCulture)},{device.Bay},{device.Name}.zip";
                 var zipFileInfo = new FileInfo(PathHelper.ValidatePath(exportPath, zipFilename));
 
-                if (zipFileInfo.Exists)
+                if (zipFileInfo.Exists || !overwriteExisting)
                 {
                     Logger.Trace($"{device} - Zip file exists: {zipFilename}");
                     continue;
@@ -370,7 +370,22 @@ namespace Ordos.IEDService.Services
                     {
                         Logger.Trace($"{device} - Adding {drFile} to Zip file: {zipFilename}");
 
-                        var zipEntry = zip.CreateEntry(drFile.FileName);
+                        var fileInZip = (from f in zip.Entries
+                                         where f.Name == Path.GetFileName(drFile.FileName)
+                                         select f).FirstOrDefault();
+
+                        ZipArchiveEntry zipEntry;
+
+                        if (fileInZip != null)
+                        {
+                            fileInZip.Delete();
+                            zipEntry = zip.CreateEntry(drFile.FileName);
+                        }
+                        else
+                        {
+                            zipEntry = zip.CreateEntry(drFile.FileName);
+                        }
+
                         //Get the stream of the attachment
                         using (var originalFileStream = new MemoryStream(drFile.FileData))
                         using (var zipEntryStream = zipEntry.Open())
