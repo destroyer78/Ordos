@@ -96,7 +96,7 @@ namespace Ordos.IEDService.Services
 
                 //Remove the files that have been already downloaded before:
                 //It will filter the files that are not in the DB.
-                var filteredDownloadableFileList = FilterExistingFiles(device, downloadableFileList);
+                var filteredDownloadableFileList = DatabaseService.FilterExistingFiles(device, downloadableFileList);
 
                 Logger.Info($"{device} - {filteredDownloadableFileList.Count()} New Files Found");
 
@@ -115,7 +115,7 @@ namespace Ordos.IEDService.Services
 
                     Logger.Info($"{device} - Saving files to the DB");
 
-                    StoreComtradeFilesToDatabase(device, temporaryComtradeFiles);
+                    DatabaseService.StoreComtradeFilesToDatabase(device, temporaryComtradeFiles);
 
                     Logger.Info($"{device} - Exporting files");
 
@@ -194,49 +194,7 @@ namespace Ordos.IEDService.Services
             return downloadableFileList;
         }
 
-        private static IEnumerable<(string, ulong, uint)> FilterExistingFiles(Device device, IEnumerable<(string FileName, ulong CreationTime, uint FileSize)> downloadableFileList)
-        {
-            var filteredDownloadableFileList = new List<(string FileName, ulong LastModifiedDate, uint FileSize)>();
-
-            using (var context = new SystemContext())
-            {
-                //Get the DB device:
-                var dev = context.Devices
-                                 .Include(x => x.DisturbanceRecordings)
-                                    .ThenInclude(x => x.DRFiles)
-                                 .FirstOrDefault(x => x.Id.Equals(device.Id));
-
-                //If device not found, return empty list:
-                if (dev == null)
-                {
-                    Logger.Error($"{device} Not found on the DB");
-                    return filteredDownloadableFileList;
-                }
-
-                //Get the list of all DRFiles in the downloadableFileList:
-                //If the ied already has that file (file.name && file.size) (should have it in the database), skip;
-                //otherwise add that file to the filtered download list:
-                var drFiles = dev.DisturbanceRecordings.SelectMany(x => x.DRFiles);
-
-                foreach (var downloadableFile in downloadableFileList)
-                {
-                    Logger.Trace($"{device} - {downloadableFile}");
-
-                    if (drFiles
-                        .Any(x => x.FileName.Equals(downloadableFile.FileName.GetDestinationFilename())
-                             && x.FileSize == downloadableFile.FileSize))
-                    {
-                        Logger.Trace($"{device} - File already in the DB");
-                        continue;
-                    }
-
-                    Logger.Trace($"{device} - New file found!");
-
-                    filteredDownloadableFileList.Add(downloadableFile);
-                }
-            }
-            return filteredDownloadableFileList;
-        }
+        
 
         /// <summary>
         /// Download each file in the download list.
@@ -267,33 +225,6 @@ namespace Ordos.IEDService.Services
             BinaryWriter binWriter = (BinaryWriter)parameter;
             binWriter.Write(data);
             return true;
-        }
-
-        private static void StoreComtradeFilesToDatabase(Device device, List<DisturbanceRecording> temporaryComtradeFiles)
-        {
-            using (var context = new SystemContext())
-            {
-                //Get the DB device:
-                var dev = context.Devices
-                                 .Include(ied => ied.DisturbanceRecordings)
-                                    .ThenInclude(dr => dr.DRFiles)
-                                 .FirstOrDefault(x => x.Id.Equals(device.Id));
-
-                //If device not found, return empty list:
-                if (dev == null)
-                {
-                    Logger.Error($"{device} Not found on the DB");
-                    return;
-                }
-
-                foreach (var item in temporaryComtradeFiles)
-                {
-                    Logger.Trace($"{device} - {item}");
-                    dev.DisturbanceRecordings.Add(item);
-                }
-
-                context.SaveChanges();
-            }
         }
 
         void IConnectionService.GetComtrades()

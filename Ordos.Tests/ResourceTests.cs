@@ -8,7 +8,7 @@ using Xunit;
 
 namespace Ordos.Tests
 {
-    public class ResourceHelper
+    public class ResourceTests
     {
         [Fact]
         public void TestResourceFileExists()

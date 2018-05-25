@@ -1,14 +1,11 @@
 ﻿using Ordos.Core.Models;
-using Ordos.DataService.Services;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
 
-namespace Ordos.IEDService.Services
+namespace Ordos.DataService.Services
 {
     public class ExportService
     {
@@ -16,7 +13,7 @@ namespace Ordos.IEDService.Services
 
         public static void ExportDisturbanceRecordings(Device device, List<DisturbanceRecording> temporaryComtradeFiles, bool overwriteExisting = false)
         {
-            var exportPath = DataService.Services.PathHelper.GetDeviceExportFolder(device);
+            var exportPath = PathHelper.GetDeviceExportFolder(device);
 
             foreach (var item in temporaryComtradeFiles)
             {
