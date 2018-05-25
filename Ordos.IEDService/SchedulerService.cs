@@ -1,7 +1,7 @@
 ﻿using FluentScheduler;
 using System;
 
-namespace Ordos.IEDService.Services
+namespace Ordos.IEDService
 {
     public static class SchedulerService
     {

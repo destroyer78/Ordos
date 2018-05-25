@@ -5,7 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using Ordos.DataService.Services;
+using Ordos.DataService;
 using Ordos.Core.Models;
 using Ordos.Core.Utilities;
 using IEC61850.Client;
@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Ordos.DataService.Data;
 using System.Net.NetworkInformation;
 
-namespace Ordos.IEDService.Services
+namespace Ordos.IEDService
 {
     public class MMSService : IConnectionService
     {

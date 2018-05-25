@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ordos.DataService.Services
+namespace Ordos.DataService
 {
     public static class DatabaseService
     {

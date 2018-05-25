@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Ordos.Core.Models;
-using Ordos.DataService.Services;
+using Ordos.DataService;
 
 namespace Ordos.DataService.Data
 {

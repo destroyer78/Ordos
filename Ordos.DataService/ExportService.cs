@@ -5,7 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 
-namespace Ordos.DataService.Services
+namespace Ordos.DataService
 {
     public class ExportService
     {
@@ -20,7 +20,7 @@ namespace Ordos.DataService.Services
                 Logger.Trace($"Export DR: {device} - {item}");
 
                 var zipFilename = $"{item.TriggerTime.ToString("yyyyMMdd", CultureInfo.InvariantCulture)},{item.TriggerTime.ToString("hhmmssfff", CultureInfo.InvariantCulture)},{device.Bay},{device.Name}.zip";
-                var zipFileInfo = new FileInfo(PathHelper.ValidatePath(exportPath, zipFilename));
+                var zipFileInfo = new FileInfo(PathHelper.GetOrCreateValidPath(exportPath, zipFilename));
 
                 if (zipFileInfo.Exists || !overwriteExisting)
                 {

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Ordos.DataService.Data;
 using Ordos.Core.Models;
-using Ordos.DataService.Services;
+using Ordos.DataService;
 
 namespace DRM.Pages_Devices
 {

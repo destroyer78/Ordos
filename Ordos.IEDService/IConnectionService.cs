@@ -1,6 +1,6 @@
 ﻿using Ordos.Core.Models;
 
-namespace Ordos.IEDService.Services
+namespace Ordos.IEDService
 {
     interface IConnectionService
     {

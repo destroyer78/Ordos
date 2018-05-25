@@ -3,26 +3,10 @@ using System.IO;
 using Ordos.Core.Utilities;
 using System;
 
-namespace Ordos.DataService.Services
+namespace Ordos.DataService
 {
     public static class PathHelper
     {
-        public static string GetDeviceSpecificFolder(Device device)
-        {
-            return Path.Combine(DatabaseService.CompanyName, device.Station.CleanFileName(), device.Bay.CleanFileName(), device.Name.CleanFileName(), "Oscilografias");
-        }
-
-        public static string GetDeviceExportFolder(Device device)
-        {
-            return Path.Combine(PathHelper.ExportRoot, GetDeviceSpecificFolder(device));
-        }
-
-        public static string GetDeviceExportPath(Device device, string filename)
-        {
-            var path = GetDeviceExportFolder(device);
-            return PathHelper.ValidatePath(path, filename);
-        }
-
         private static string DRMFolder => @"Ordos";
 
         public static string ExportRoot
@@ -34,7 +18,23 @@ namespace Ordos.DataService.Services
             }
         }
 
-        public static string ValidatePath(string path, string filename)
+        public static string GetDeviceSpecificFolder(Device device)
+        {
+            return Path.Combine(DatabaseService.CompanyName, device.Station.CleanFileName(), device.Bay.CleanFileName(), device.Name.CleanFileName(), "Oscilografias");
+        }
+
+        public static string GetDeviceExportFolder(Device device)
+        {
+            return Path.Combine(ExportRoot, GetDeviceSpecificFolder(device));
+        }
+
+        public static string GetDeviceExportPath(Device device, string filename)
+        {
+            var path = GetDeviceExportFolder(device);
+            return GetOrCreateValidPath(path, filename);
+        }
+
+        public static string GetOrCreateValidPath(string path, string filename)
         {
             var fileInfo = new FileInfo(Path.Combine(path, filename));
 
@@ -52,7 +52,7 @@ namespace Ordos.DataService.Services
         public static string GetTemporaryDownloadPath(Device device, string filename)
         {
             var path = GetTemporaryDownloadFolder(device);
-            return ValidatePath(path, filename);
+            return GetOrCreateValidPath(path, filename);
         }
 
         /// <summary>

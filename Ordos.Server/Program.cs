@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Ordos.DataService.Data;
-using Ordos.DataService.Services;
-using Ordos.IEDService.Services;
+using Ordos.DataService;
+using Ordos.IEDService;
 
 namespace Ordos.Server
 {
