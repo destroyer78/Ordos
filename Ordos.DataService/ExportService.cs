@@ -1,4 +1,6 @@
-﻿using Ordos.Core.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Ordos.Core.Models;
+using Ordos.DataService.Data;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -22,14 +24,31 @@ namespace Ordos.DataService
             return GetZipFileName(device.Name, device.Bay, dr.TriggerTime);
         }
 
-        public static void ExportDisturbanceRecordings(Device device, List<DisturbanceRecording> comtradeFiles, bool overwriteExisting = false)
+        public static void ExportDisturbanceRecordings(string exportPath, bool overwriteExisting = false)
+        {
+            using (var context = new SystemContext())
+            {
+                //Get the DB device:
+                var devices = context.Devices
+                    .Include(x => x.DisturbanceRecordings)
+                    .ThenInclude(x => x.DRFiles);
+
+                foreach (var device in devices)
+                {
+                    ExportDisturbanceRecordings(exportPath, device.Name, device.Bay,
+                        device.DisturbanceRecordings, overwriteExisting);
+                }
+            }
+        }
+
+        public static void ExportDisturbanceRecordings(Device device, ICollection<DisturbanceRecording> comtradeFiles, bool overwriteExisting = false)
         {
             var exportPath = PathHelper.GetDeviceExportFolder(device);
 
             ExportDisturbanceRecordings(exportPath, device.Name, device.Bay, comtradeFiles, overwriteExisting);
         }
 
-        public static void ExportDisturbanceRecordings(string exportPath, string deviceName, string deviceBay, List<DisturbanceRecording> comtradeFiles, bool overwriteExisting = false)
+        public static void ExportDisturbanceRecordings(string exportPath, string deviceName, string deviceBay, ICollection<DisturbanceRecording> comtradeFiles, bool overwriteExisting = false)
         {
             foreach (var item in comtradeFiles)
             {

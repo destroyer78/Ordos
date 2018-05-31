@@ -3,6 +3,9 @@ using Ordos.DataService;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Ordos.DataService.Data;
 using Xunit;
 
 namespace Ordos.Tests
@@ -10,13 +13,33 @@ namespace Ordos.Tests
     public class ExportServiceTests
     {
         [Fact]
+        public void TestExportDatabaseDRs()
+        {
+            var drCount = 0;
+            var exportPath = "exportTestFolder/";
+
+            Directory.Delete(exportPath,true);
+            Assert.False(Directory.Exists(exportPath));
+
+            using (var context = new SystemContext())
+            {
+                drCount = context.DisturbanceRecordings.Count();
+            }
+
+            ExportService.ExportDisturbanceRecordings(exportPath, true);
+
+            Assert.True(Directory.Exists(exportPath));
+            Assert.Equal(drCount, new DirectoryInfo(exportPath).GetFiles().Length);
+        }
+
+        [Fact]
         public void TestGetZipFileString()
         {
             var exportDeviceName = "testDevice";
             var exportDeviceBay = "testBay";
             var exportDateTime = new DateTime(2018, 5, 25, 14, 30, 46);
             Assert.Equal($"20180525,143046000,{exportDeviceBay},{exportDeviceName}.zip",
-                DataService.ExportService.GetZipFileName(exportDeviceName, exportDeviceBay, exportDateTime));
+                ExportService.GetZipFileName(exportDeviceName, exportDeviceBay, exportDateTime));
         }
 
         [Fact]
@@ -38,7 +61,7 @@ namespace Ordos.Tests
             };
 
             Assert.Equal($"20180525,143046000,{exportDeviceBay},{exportDeviceName}.zip",
-                DataService.ExportService.GetZipFileName(device, dr));
+                ExportService.GetZipFileName(device, dr));
         }
 
         [Fact]
