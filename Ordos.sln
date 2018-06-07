@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ordos.DataService", "Ordos.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ordos.Server", "Ordos.Server\Ordos.Server.csproj", "{6F9B9534-F1E1-4E4C-B60E-55721845EC6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordos.Tests", "Ordos.Tests\Ordos.Tests.csproj", "{23C1477F-6DCF-4436-BA92-DB169CCC3475}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ordos.Tests", "Ordos.Tests\Ordos.Tests.csproj", "{23C1477F-6DCF-4436-BA92-DB169CCC3475}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

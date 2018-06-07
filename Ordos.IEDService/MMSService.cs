@@ -17,7 +17,7 @@ namespace Ordos.IEDService
 {
     public class MMSService : IConnectionService
     {
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Logger = Core.Utilities.Logger.Init();
 
         /// <summary>
         /// Main entry point for the IED Service.

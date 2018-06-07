@@ -10,7 +10,7 @@ namespace Ordos.DataService
 {
     public static class DatabaseService
     {
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Logger = Core.Utilities.Logger.Init();
 
         public static List<Device> Devices { get; private set; }
         public static string CompanyName { get; set; }

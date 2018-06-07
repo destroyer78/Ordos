@@ -12,7 +12,7 @@ namespace Ordos.DataService
 {
     public class ExportService
     {
-        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Logger = Core.Utilities.Logger.Init();
 
         public static string GetZipFileName(string deviceName, string deviceBay, DateTime triggerDateTime)
         {

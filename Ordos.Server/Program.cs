@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Ordos.DataService.Data;
 using Ordos.DataService;
 using Ordos.IEDService;
+using Logger = Ordos.Core.Utilities.Logger;
 
 namespace Ordos.Server
 {
@@ -13,7 +14,7 @@ namespace Ordos.Server
     {
         public static void Main(string[] args)
         {
-            NLog.LogManager.Configuration.Variables["logDirectory"] = PathHelper.ExportRoot;
+            Logger.Init();
 
             var host = BuildWebHost(args);
 

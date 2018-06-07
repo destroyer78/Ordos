@@ -1,4 +1,5 @@
-﻿using Ordos.DataService;
+﻿using Ordos.Core;
+using Ordos.DataService;
 using Xunit;
 
 namespace Ordos.Tests
@@ -8,7 +9,7 @@ namespace Ordos.Tests
         [Fact]
         public void TestGetExportPath()
         {
-            var root = PathHelper.ExportRoot;
+            var root = Paths.ExportRoot;
             Assert.NotEmpty(root);
             Assert.Contains("Ordos", root);
         }

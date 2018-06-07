@@ -2,22 +2,12 @@
 using System.IO;
 using Ordos.Core.Utilities;
 using System;
+using Ordos.Core;
 
 namespace Ordos.DataService
 {
     public static class PathHelper
     {
-        private static string DRMFolder => @"Ordos";
-
-        public static string ExportRoot
-        {
-            get
-            {
-                var rootDrive = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System));
-                return Path.Combine(rootDrive, DRMFolder);
-            }
-        }
-
         public static string GetDeviceSpecificFolder(Device device)
         {
             return Path.Combine(DatabaseService.CompanyName, device.Station.CleanFileName(), device.Bay.CleanFileName(), device.Name.CleanFileName(), "Oscilografias");
@@ -25,7 +15,7 @@ namespace Ordos.DataService
 
         public static string GetDeviceExportFolder(Device device)
         {
-            return Path.Combine(ExportRoot, GetDeviceSpecificFolder(device));
+            return Path.Combine(Paths.ExportRoot, GetDeviceSpecificFolder(device));
         }
 
         public static string GetDeviceExportPath(Device device, string filename)
@@ -46,7 +36,7 @@ namespace Ordos.DataService
 
         public static string GetTemporaryDownloadFolder(Device device)
         {
-            return Path.Combine(Path.GetTempPath(), DRMFolder, device.Station.CleanFileName(), device.Bay.CleanFileName(), device.Name.CleanFileName());
+            return Path.Combine(Path.GetTempPath(), Paths.DRMFolder, device.Station.CleanFileName(), device.Bay.CleanFileName(), device.Name.CleanFileName());
         }
 
         public static string GetTemporaryDownloadPath(Device device, string filename)
