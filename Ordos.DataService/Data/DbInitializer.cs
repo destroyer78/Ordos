@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Ordos.Core.Models;
-using Ordos.DataService;
 
 namespace Ordos.DataService.Data
 {
@@ -13,8 +12,6 @@ namespace Ordos.DataService.Data
             // Look if DB was seeded;
             if (context.Devices.Any() || context.ConfigurationValues.Any())
                 return;   // DB has been seeded
-
-
 
             var configuration = new[]
             {

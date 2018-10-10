@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ordos.DataService.Data;
@@ -18,7 +19,7 @@ namespace Ordos.Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<SystemContext>();
+            services.AddDbContext<SystemContext>(x=>x.UseSqlServer(SystemContext.SQLExpressConnectionString));
             services.AddMvc();
         }
 
