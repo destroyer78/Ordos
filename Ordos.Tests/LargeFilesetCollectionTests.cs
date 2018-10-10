@@ -11,7 +11,12 @@ namespace Ordos.Tests
         [Fact]
         public void TestParseFilesGroupFolder()
         {
-            var drFileList = new DirectoryInfo(@"C:\Users\admin\Desktop\Ordos DRs\Ordos\GIS 23KV\1\")
+            var dir = @"C:\Users\admin\Desktop\Ordos DRs\Ordos\GIS 23KV\1\";
+
+            if (!Directory.Exists(dir))
+                return;
+
+            var drFileList = new DirectoryInfo(dir)
                 .EnumerateFiles("*.*", SearchOption.AllDirectories)
                 .Where(x => x.Name.IsPartOfDisturbanceRecording());
 
@@ -48,7 +53,12 @@ namespace Ordos.Tests
         [Fact]
         public void TestParseZIPFolder()
         {
-            var drFileList = new DirectoryInfo(@"C:\Users\admin\Desktop\Ordos DRs\Ordos\GIS 23KV\1\")
+            var dir = @"C:\Users\admin\Desktop\Ordos DRs\Ordos\GIS 23KV\1\";
+
+            if (!Directory.Exists(dir))
+                return;
+
+            var drFileList = new DirectoryInfo(dir)
                 .EnumerateFiles("*.zip", SearchOption.AllDirectories)
                 .Where(x => x.Name.IsDownloadable());
 
