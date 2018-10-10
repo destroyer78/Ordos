@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ordos.DataService.Data;
 
 namespace Ordos.DataService.Migrations
 {
     [DbContext(typeof(SystemContext))]
-    partial class SystemContextModelSnapshot : ModelSnapshot
+    [Migration("20181010193729_AddBayId")]
+    partial class AddBayId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
