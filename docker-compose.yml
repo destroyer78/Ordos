@@ -1,0 +1,20 @@
+version: '3.7'
+
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: ordos-app:demo
+    networks:
+      - app_nw
+    ports:
+      - "51084:51084"
+    volumes:
+      - ./:/app
+    command: ["dotnet", "run", "-p", "Ordos.Server/Ordos.Server.csproj"]
+
+
+networks:
+  app_nw:
+    driver: bridge
