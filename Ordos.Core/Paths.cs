@@ -13,8 +13,8 @@ namespace Ordos.Core
         {
             get
             {
-                var userProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                return Path.Combine(userProfilePath, DRMFolder);
+                var rootDrive = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System));
+                return Path.Combine(rootDrive, DRMFolder);
             }
         }
     }
