@@ -44,6 +44,10 @@ namespace Ordos.Core.Models
         [Display(Name = "Bahía")]
         public string Bay { get; set; }
 
+        [Required]
+        [Display(Name = "Nemotécnico Bahía")]
+        public string BayId { get; set; }
+
         [Display(Name = "Estado")]
         public bool IsConnected { get; set; }
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,10 @@ namespace DRM.Pages_Records
 
         public async Task OnGetAsync()
         {
-            Records = await _context.DisturbanceRecordings.ToListAsync();
+            Records = await _context.DisturbanceRecordings
+                .OrderByDescending(x=>x.TriggerTime)
+                .Include(x => x.Device).AsNoTracking()
+                .ToListAsync();
         }
     }
 }

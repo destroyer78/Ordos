@@ -10,7 +10,7 @@ namespace Ordos.DataService
     {
         public static string GetDeviceSpecificFolder(Device device)
         {
-            return Path.Combine(DatabaseService.CompanyName, device.Station.CleanFileName(), device.Bay.CleanFileName(), device.Name.CleanFileName(), "Oscilografias");
+            return Path.Combine(DatabaseService.CompanyName.CleanFileName(), device.Station.CleanFileName(), device.Bay.CleanFileName(), device.Name.CleanFileName(), "Oscilografias");
         }
 
         public static string GetDeviceExportFolder(Device device)

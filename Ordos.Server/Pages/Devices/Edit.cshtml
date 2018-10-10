@@ -40,6 +40,11 @@
                 <span asp-validation-for="Device.Bay" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Device.BayId" class="control-label"></label>
+                <input asp-for="Device.BayId" class="form-control" />
+                <span asp-validation-for="Device.BayId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
         </form>

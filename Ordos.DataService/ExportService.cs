@@ -14,14 +14,14 @@ namespace Ordos.DataService
     {
         private static readonly NLog.Logger Logger = Core.Utilities.Logger.Init();
 
-        public static string GetZipFileName(string deviceName, string deviceBay, DateTime triggerDateTime)
+        public static string GetZipFileName(string deviceName, string deviceBayId, DateTime triggerDateTime)
         {
-            return $"{triggerDateTime.ToString("yyyyMMdd,HHmmssfff", CultureInfo.InvariantCulture)},{deviceBay},{deviceName}.zip";
+            return $"{triggerDateTime.ToString("yyyyMMdd,HHmmssfff", CultureInfo.InvariantCulture)},{deviceBayId},{deviceName}.zip";
         }
 
         public static string GetZipFileName(Device device, DisturbanceRecording dr)
         {
-            return GetZipFileName(device.Name, device.Bay, dr.TriggerTime);
+            return GetZipFileName(device.Name, device.BayId, dr.TriggerTime);
         }
 
         public static void ExportDisturbanceRecordings(string exportPath, bool overwriteExisting = false)
@@ -35,7 +35,7 @@ namespace Ordos.DataService
 
                 foreach (var device in devices)
                 {
-                    ExportDisturbanceRecordings(exportPath, device.Name, device.Bay,
+                    ExportDisturbanceRecordings(exportPath, device.Name, device.BayId, device.Bay,
                         device.DisturbanceRecordings, overwriteExisting);
                 }
             }
@@ -45,16 +45,16 @@ namespace Ordos.DataService
         {
             var exportPath = PathHelper.GetDeviceExportFolder(device);
 
-            ExportDisturbanceRecordings(exportPath, device.Name, device.Bay, comtradeFiles, overwriteExisting);
+            ExportDisturbanceRecordings(exportPath, device.Name, device.BayId, device.Bay, comtradeFiles, overwriteExisting);
         }
 
-        public static void ExportDisturbanceRecordings(string exportPath, string deviceName, string deviceBay, ICollection<DisturbanceRecording> comtradeFiles, bool overwriteExisting = false)
+        public static void ExportDisturbanceRecordings(string exportPath, string deviceName, string deviceBayId, string deviceBay, ICollection<DisturbanceRecording> comtradeFiles, bool overwriteExisting = false)
         {
             foreach (var item in comtradeFiles)
             {
                 Logger.Trace($"Export DR: {deviceName} - {item}");
 
-                var zipFilename = GetZipFileName(deviceName, deviceBay, item.TriggerTime);
+                var zipFilename = GetZipFileName(deviceName, deviceBayId, item.TriggerTime);
                 var zipFileInfo = new FileInfo(PathHelper.GetOrCreateValidPath(exportPath, zipFilename));
 
                 if (zipFileInfo.Exists && !overwriteExisting)

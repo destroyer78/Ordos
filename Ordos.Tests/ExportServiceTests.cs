@@ -36,10 +36,10 @@ namespace Ordos.Tests
         public void TestGetZipFileString()
         {
             var exportDeviceName = "testDevice";
-            var exportDeviceBay = "testBay";
+            var exportDeviceBayId = "testBayId";
             var exportDateTime = new DateTime(2018, 5, 25, 14, 30, 46);
-            Assert.Equal($"20180525,143046000,{exportDeviceBay},{exportDeviceName}.zip",
-                ExportService.GetZipFileName(exportDeviceName, exportDeviceBay, exportDateTime));
+            Assert.Equal($"20180525,143046000,{exportDeviceBayId},{exportDeviceName}.zip",
+                ExportService.GetZipFileName(exportDeviceName, exportDeviceBayId, exportDateTime));
         }
 
         [Fact]
@@ -47,11 +47,13 @@ namespace Ordos.Tests
         {
             var exportDeviceName = "testDevice";
             var exportDeviceBay = "testBay";
+            var exportDeviceBayId = "testBayId";
             var exportDateTime = new DateTime(2018, 5, 25, 14, 30, 46);
 
             var device = new Device()
             {
                 Bay = exportDeviceBay,
+                BayId = exportDeviceBayId,
                 Name = exportDeviceName,
             };
 
@@ -60,7 +62,7 @@ namespace Ordos.Tests
                 TriggerTime = exportDateTime,
             };
 
-            Assert.Equal($"20180525,143046000,{exportDeviceBay},{exportDeviceName}.zip",
+            Assert.Equal($"20180525,143046000,{exportDeviceBayId},{exportDeviceName}.zip",
                 ExportService.GetZipFileName(device, dr));
         }
 
@@ -70,11 +72,13 @@ namespace Ordos.Tests
             var exportPath = "exportTestFolder/";
             var exportDeviceName = "testDevice";
             var exportDeviceBay = "testBay";
+            var exportDeviceBayId = "testBayId";
             var exportDateTime = new DateTime(2018, 5, 25, 14, 30, 46);
 
             var device = new Device()
             {
                 Bay = exportDeviceBay,
+                BayId = exportDeviceBayId,
                 Name = exportDeviceName,
             };
 
@@ -96,7 +100,7 @@ namespace Ordos.Tests
 
             Assert.False(File.Exists(fullFilename));
 
-            ExportService.ExportDisturbanceRecordings(exportPath, exportDeviceName, exportDeviceBay, list, false);
+            ExportService.ExportDisturbanceRecordings(exportPath, exportDeviceName, exportDeviceBayId, exportDeviceBay, list, false);
 
             Assert.True(File.Exists(fullFilename));
 
@@ -110,11 +114,13 @@ namespace Ordos.Tests
             var exportPath = "exportTestFolder/";
             var exportDeviceName = "testDevice";
             var exportDeviceBay = "testBay";
+            var exportDeviceBayId = "testBayId";
             var exportDateTime = new DateTime(2018, 5, 25, 14, 30, 46);
 
             var device = new Device()
             {
                 Bay = exportDeviceBay,
+                BayId = exportDeviceBayId,
                 Name = exportDeviceName,
             };
 
@@ -151,13 +157,13 @@ namespace Ordos.Tests
 
             var oldSize = new FileInfo(fullFilename).Length;
 
-            ExportService.ExportDisturbanceRecordings(exportPath, exportDeviceName, exportDeviceBay, list, false);
+            ExportService.ExportDisturbanceRecordings(exportPath, exportDeviceName, exportDeviceBayId, exportDeviceBay, list, false);
 
             var newSize1 = new FileInfo(fullFilename).Length;
 
             Assert.Equal(oldSize, newSize1);
 
-            ExportService.ExportDisturbanceRecordings(exportPath, exportDeviceName, exportDeviceBay, list, true);
+            ExportService.ExportDisturbanceRecordings(exportPath, exportDeviceName, exportDeviceBayId, exportDeviceBay, list, true);
             var newSize2 = new FileInfo(fullFilename).Length;
 
             Assert.NotEqual(oldSize, newSize2);

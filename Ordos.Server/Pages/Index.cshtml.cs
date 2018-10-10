@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Ordos.Core.Models;
 using Ordos.DataService.Data;
@@ -23,7 +24,9 @@ namespace Ordos.Server.Pages
             Device = await _context.Devices
                 .ToListAsync();
 
-            Records = await _context.DisturbanceRecordings.ToListAsync();
+            Records = await _context.DisturbanceRecordings
+                .OrderByDescending(x=>x.TriggerTime)
+                .ToListAsync();
         }
     }
 }
