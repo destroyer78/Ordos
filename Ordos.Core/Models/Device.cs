@@ -27,6 +27,8 @@ namespace Ordos.Core.Models
         [Display(Name = "Oscilografias")]
         public ICollection<DisturbanceRecording> DisturbanceRecordings { get; set; }
 
+        public ICollection<IEDFile> DownloadedFiles { get; set; }
+
         [Required]
         [Display(Name = "Dispositivo")]
         public string Name { get; set; }
