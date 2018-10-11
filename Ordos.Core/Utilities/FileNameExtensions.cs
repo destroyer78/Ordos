@@ -11,9 +11,9 @@ namespace Ordos.Core.Utilities
 
         public static string CFGExtension { get; } = ".CFG";
 
-        public static string GetDestinationFilename(this string FileName)
+        public static string GetDestinationFilename(this string fileName)
         {
-            return Path.GetFileName(FileName).CleanFileName();
+            return Path.GetFileName(fileName).CleanFileName();
         }
 
         public static bool IsPartOfDisturbanceRecording(this string filename)

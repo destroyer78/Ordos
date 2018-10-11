@@ -120,11 +120,12 @@ namespace Ordos.DataService
                         .Any(x => x.FileName.Equals(downloadableFile.FileName.GetDestinationFilename())
                              && x.FileSize == downloadableFile.FileSize))
                     {
+                        //It seems like the logs on the 670s never hit this code:
                         Logger.Trace($"{device} - File already in the DB");
                         continue;
                     }
-
                     Logger.Trace($"{device} - New file found!");
+                    Logger.Trace($"Filename: {downloadableFile.FileName} DestinationFilename: {downloadableFile.FileName.GetDestinationFilename()} Filesize:{downloadableFile.FileSize}");
 
                     filteredDownloadableFileList.Add(downloadableFile);
                 }
