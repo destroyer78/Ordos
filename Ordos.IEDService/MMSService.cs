@@ -107,7 +107,7 @@ namespace Ordos.IEDService
                     DownloadComtradeFiles(iedConnection, device, filteredDownloadableFileList);
 
                     Logger.Info($"{device} - Reading files");
-                    
+
                     //Using the recently donwloaded files:
                     //(Each temporary folder is unique for each IED)
                     var temporaryFolder = PathHelper.GetTemporaryDownloadFolder(device);
@@ -116,7 +116,8 @@ namespace Ordos.IEDService
                     Logger.Info($"{device} - Saving files to the DB");
 
                     DatabaseService.StoreComtradeFilesToDatabase(device, temporaryComtradeFiles);
-                    //TODO: Add the downloadedComtradeFiles to the database as well, with all their information.
+                    
+                    DatabaseService.StoreIEDFilesToDatabase(device, filteredDownloadableFileList);
 
                     Logger.Info($"{device} - Exporting files");
 
@@ -162,12 +163,12 @@ namespace Ordos.IEDService
             }
         }
 
-        private static IEnumerable<(string, ulong, uint)> GetDownloadableFileList(IedConnection iedConnection, Device device, string directoryName)
+        private static IEnumerable<IEDFile> GetDownloadableFileList(IedConnection iedConnection, Device device, string directoryName)
         {
             //Get Files from Device:
             var files = iedConnection.GetFileDirectory(directoryName);
 
-            var downloadableFileList = new List<(string FileName, ulong CreationTime, uint FileSize)>();
+            var downloadableFileList = new List<IEDFile>();
 
             var logDirectoryName = string.IsNullOrWhiteSpace(directoryName) ? "Root" : directoryName;
             Logger.Trace($"{device} - List IED Files on: {logDirectoryName}");
@@ -188,14 +189,22 @@ namespace Ordos.IEDService
                 }
                 else
                 {
-                    if (filename.IsDownloadable())
-                        downloadableFileList.Add((directoryName + filename, file.GetLastModified(), file.GetFileSize()));
+                    if (!filename.IsDownloadable()) 
+                        continue;
+
+                    var iedFile = new IEDFile()
+                    {
+                        CreationTime = file.GetLastModified(),
+                        FileSize = file.GetFileSize(),
+                        FileName = directoryName + filename,
+                    };
+                    downloadableFileList.Add(iedFile);
                 }
             }
             return downloadableFileList;
         }
 
-        
+
 
         /// <summary>
         /// Download each file in the download list.
@@ -203,19 +212,19 @@ namespace Ordos.IEDService
         /// <param name="iedConnection"></param>
         /// <param name="device"></param>
         /// <param name="downloadableFileList"></param>
-        private static void DownloadComtradeFiles(IedConnection iedConnection, Device device, IEnumerable<(string fileName, ulong creationTime, uint fileSize)> downloadableFileList)
+        private static void DownloadComtradeFiles(IedConnection iedConnection, Device device, IEnumerable<IEDFile> downloadableFileList)
         {
-            foreach (var (fileName, creationTime, fileSize) in downloadableFileList)
+            foreach (var iedFile in downloadableFileList)
             {
-                Logger.Info($"{device} - Downloading file: {fileName} ({fileSize})");
+                Logger.Info($"{device} - Downloading file: {iedFile.FileName} ({iedFile.FileSize})");
                 //TODO: Check if the GetTemporaryDownloadPath works on both IEDs: 670, 615;
                 //var destinationFilename = PathService.GetTemporaryDownloadPath(device, FileName.ReplaceAltDirectorySeparator().CleanFileName());
-                var destinationFilename = PathHelper.GetTemporaryDownloadPath(device, fileName.GetDestinationFilename());
+                var destinationFilename = PathHelper.GetTemporaryDownloadPath(device, iedFile.FileName.GetDestinationFilename());
 
                 using (var fs = new FileStream(destinationFilename, FileMode.Create, FileAccess.ReadWrite))
                 using (var w = new BinaryWriter(fs))
                 {
-                    iedConnection.GetFile(fileName, GetFileHandler, w);
+                    iedConnection.GetFile(iedFile.FileName, GetFileHandler, w);
                 }
             }
         }

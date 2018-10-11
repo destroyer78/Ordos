@@ -14,7 +14,7 @@ namespace Ordos.Core.Models
         public Device Device { get; set; }
 
         public string FileName { get; set; }
-        public ulong FileDate { get; set; }
+        public ulong CreationTime { get; set; }
         public uint FileSize { get; set; }
     }
 }
