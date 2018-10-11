@@ -111,7 +111,7 @@ namespace Ordos.DataService
                 //If the ied already has that file (file.name && file.size) (should have it in the database), skip;
                 //otherwise add that file to the filtered download list:
                 var drFiles = dev.DisturbanceRecordings.SelectMany(x => x.DRFiles);
-
+                
                 foreach (var downloadableFile in downloadableFileList)
                 {
                     Logger.Trace($"{device} - {downloadableFile}");
