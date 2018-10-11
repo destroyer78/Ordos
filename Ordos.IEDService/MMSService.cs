@@ -116,6 +116,8 @@ namespace Ordos.IEDService
                     Logger.Info($"{device} - Saving files to the DB");
 
                     DatabaseService.StoreComtradeFilesToDatabase(device, temporaryComtradeFiles);
+                    //TODO: Add the downloadedComtradeFiles to the database as well, with all their information.
+
 
                     Logger.Info($"{device} - Exporting files");
 

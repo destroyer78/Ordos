@@ -26,9 +26,11 @@ namespace Ordos.DataService
         {
             using (var context = new SystemContext())
             {
-                Devices = context.Devices
-                                 .Include(d => d.DisturbanceRecordings).AsNoTracking()
-                                 .ToList();
+                //No changes, no tracking
+                Devices = context
+                            .Devices.AsNoTracking()
+                            .Include(d => d.DisturbanceRecordings).AsNoTracking()
+                            .ToList();
             }
         }
 
@@ -36,8 +38,14 @@ namespace Ordos.DataService
         {
             using (var context = new SystemContext())
             {
-                if (context.ConfigurationValues == null) return;
-                CompanyName = context.ConfigurationValues.FirstOrDefault(x => x.Id.Contains(CompanyNameLabel))?.Value;
+                if (context.ConfigurationValues == null)
+                    return;
+
+                //No changes, no tracking
+                CompanyName = context
+                                .ConfigurationValues.AsNoTracking()
+                                .FirstOrDefault(x => x.Id.Contains(CompanyNameLabel))?
+                                .Value;
             }
         }
 
@@ -47,7 +55,11 @@ namespace Ordos.DataService
             {
                 using (var context = new SystemContext())
                 {
-                    var dev = context.Devices.FirstOrDefault(x => x.Id.Equals(device.Id));
+                    //As tracking, updated based on connectivity
+                    var dev = context
+                                .Devices
+                                .FirstOrDefault(x => x.Id.Equals(device.Id));
+
                     if (dev == null) return;
 
                     dev.IsConnected = isConnected;
@@ -66,10 +78,12 @@ namespace Ordos.DataService
             using (var context = new SystemContext())
             {
                 //Get the DB device:
-                var dev = context.Devices
-                                 .Include(ied => ied.DisturbanceRecordings)
-                                    .ThenInclude(dr => dr.DRFiles)
-                                 .FirstOrDefault(x => x.Id.Equals(device.Id));
+                //Tracking, DRs will get updated.
+                var dev = context
+                            .Devices
+                            .Include(ied => ied.DisturbanceRecordings)
+                            .ThenInclude(dr => dr.DRFiles)
+                            .FirstOrDefault(x => x.Id.Equals(device.Id));
 
                 //If device not found, return empty list:
                 if (dev == null)
@@ -111,7 +125,7 @@ namespace Ordos.DataService
                 //If the ied already has that file (file.name && file.size) (should have it in the database), skip;
                 //otherwise add that file to the filtered download list:
                 var drFiles = dev.DisturbanceRecordings.SelectMany(x => x.DRFiles);
-                
+
                 foreach (var downloadableFile in downloadableFileList)
                 {
                     Logger.Trace($"{device} - {downloadableFile}");
