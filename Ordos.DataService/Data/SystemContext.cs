@@ -10,9 +10,13 @@ namespace Ordos.DataService.Data
         public static string SQLExpressConnectionString =>
             "Server=(localdb)\\mssqllocaldb;Database=Ordos;ConnectRetryCount=0;Trusted_Connection=True;MultipleActiveResultSets=true";
 
-        public static Guid guid=new Guid();
+        public static string PSQLConnectionString =>
+            "Host=172.17.0.2;Port=5432;Username=postgres;Password=1234;Database=postgres;";
 
-                public SystemContext()
+
+        public static Guid guid = new Guid();
+
+        public SystemContext()
         {
         }
 
@@ -29,7 +33,7 @@ namespace Ordos.DataService.Data
         {
 
             if (!optionsBuilder.IsConfigured)
-                optionsBuilder.UseInMemoryDatabase(guid.ToString());
+                optionsBuilder.UseNpgsql(PSQLConnectionString);
 
             // optionsBuilder.UseSqlServer(SQLExpressConnectionString);
         }
