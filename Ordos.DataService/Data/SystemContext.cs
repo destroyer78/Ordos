@@ -31,11 +31,10 @@ namespace Ordos.DataService.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
             if (!optionsBuilder.IsConfigured)
-                optionsBuilder.UseNpgsql(PSQLConnectionString);
-
-            // optionsBuilder.UseSqlServer(SQLExpressConnectionString);
+                //optionsBuilder.UseNpgsql(PSQLConnectionString);
+                // optionsBuilder.UseSqlServer(SQLExpressConnectionString);
+                optionsBuilder.UseInMemoryDatabase(guid.ToString());
         }
     }
 }
