@@ -28,7 +28,8 @@ namespace Ordos.Core.Utilities
                         new CsvColumn("Detail", "${message}"),
                         new CsvColumn("Exception", "${exception:format=ToString}")
                     }
-                }
+                },
+                MaxArchiveFiles = 10
             };
             config.AddTarget(fileTarget);
 
