@@ -25,7 +25,7 @@ services:
           - postgres
     environment:
       POSTGRES_PASSWORD: changeme
-   db_testing:
+ db_testing:
     image: postgres:10
     restart: always
     networks:
