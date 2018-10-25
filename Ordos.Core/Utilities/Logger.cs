@@ -17,30 +17,30 @@ namespace Ordos.Core.Utilities
             {
                 Name = "logfile",
                 FileName = @"${var:logDirectory}\Logs\Log ${date:format=yyyy-MM-dd}.log",
-                Layout = new CsvLayout()
+                Layout = new CsvLayout
                 {
                     Columns =
                     {
                         new CsvColumn("Time", "${longdate}"),
                         new CsvColumn("Severity", "${uppercase:${level}}"),
-                        new CsvColumn("Location", "${callsite:className=True:fileName=True:includeSourcePath=False:methodName=True}"),
+                        new CsvColumn("Location",
+                            "${callsite:className=True:fileName=True:includeSourcePath=False:methodName=True}"),
                         new CsvColumn("Detail", "${message}"),
-                        new CsvColumn("Exception", "${exception:format=ToString}"),
-                    },
-
-                },
+                        new CsvColumn("Exception", "${exception:format=ToString}")
+                    }
+                }
             };
             config.AddTarget(fileTarget);
 
             var consoleTarget = new ConsoleTarget("logconsole")
             {
-                Layout = "${longdate} ${uppercase:${level}} ${message}",
+                Layout = "${longdate} ${uppercase:${level}} ${message}"
             };
             config.AddTarget(consoleTarget);
 
             // Step 3. Define rules
-            config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Fatal, fileTarget);
-            config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, consoleTarget);
+            config.AddRule(LogLevel.Trace, LogLevel.Fatal, fileTarget);
+            config.AddRule(LogLevel.Info, LogLevel.Fatal, consoleTarget);
 
             // Step 4. Activate the configuration
             LogManager.Configuration = config;

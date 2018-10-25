@@ -1,32 +1,35 @@
-﻿using Ordos.Core.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using NLog;
+using Ordos.Core.Models;
 
 namespace Ordos.Core.Utilities
 {
     public static class ComtradeHelper
     {
-        private static NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
 
         public static string ComtradeDatetimeFormat { get; } = "dd/MM/yyyy,HH:mm:ss.ffffff";
 
         public static (bool TryParse, DateTime DateTime) TryParseDRDate(string datetime)
         {
-            var tryParse = DateTime.TryParseExact(datetime, ComtradeDatetimeFormat, null, System.Globalization.DateTimeStyles.None, out DateTime result);
+            var tryParse = DateTime.TryParseExact(datetime, ComtradeDatetimeFormat, null, DateTimeStyles.None,
+                out var result);
             return (tryParse, result);
         }
 
         /// <summary>
-        /// Will parse:
-        /// -> Read
-        /// -> Extract Trigger Date
-        /// -> Extract Trigger Length
-        /// -> Extract Trigger Channel
-        /// -> Group into a DisturbanceRecording
+        ///     Will parse:
+        ///     -> Read
+        ///     -> Extract Trigger Date
+        ///     -> Extract Trigger Length
+        ///     -> Extract Trigger Channel
+        ///     -> Group into a DisturbanceRecording
         /// </summary>
         /// <param name="device"></param>
         /// <returns></returns>
@@ -44,8 +47,8 @@ namespace Ordos.Core.Utilities
 
             //Get all non-ZIP files Collection (Single files);
             var drFileList = new DirectoryInfo(comtradeFileFolderPath)
-                                    .EnumerateFiles("*.*", SearchOption.AllDirectories)
-                                    .Where(x => x.Name.IsPartOfDisturbanceRecording());
+                .EnumerateFiles("*.*", SearchOption.AllDirectories)
+                .Where(x => x.Name.IsPartOfDisturbanceRecording());
 
             disturbanceRecordings.AddRange(ParseSingleFilesCollection(drFileList, device.Id));
 
@@ -56,16 +59,16 @@ namespace Ordos.Core.Utilities
             return disturbanceRecordings;
         }
 
-        public static List<DisturbanceRecording> ParseZipFilesCollection(IEnumerable<FileInfo> fileInfoCollection, int deviceId)
+        public static List<DisturbanceRecording> ParseZipFilesCollection(IEnumerable<FileInfo> fileInfoCollection,
+            int deviceId)
         {
             var disturbanceRecordings = new List<DisturbanceRecording>();
 
             //Iterate over each ZIP file. Each ZIP file should be a DisturbanceRecording;
             foreach (var zipFileInfo in fileInfoCollection)
-            {
                 using (var zipFile = ZipFile.OpenRead(zipFileInfo.FullName))
                 {
-                    var dr = new DisturbanceRecording { DeviceId = deviceId };
+                    var dr = new DisturbanceRecording {DeviceId = deviceId};
 
                     //Parse DR Group:
                     var drFiles = ParseDRZipGroup(zipFile.Entries);
@@ -86,11 +89,12 @@ namespace Ordos.Core.Utilities
                         disturbanceRecordings.Add(dr);
                     }
                 }
-            }
+
             return disturbanceRecordings;
         }
 
-        public static IEnumerable<DisturbanceRecording> ParseSingleFilesCollection(IEnumerable<FileInfo> fileInfoCollection, int deviceId)
+        public static IEnumerable<DisturbanceRecording> ParseSingleFilesCollection(
+            IEnumerable<FileInfo> fileInfoCollection, int deviceId)
         {
             var disturbanceRecordings = new List<DisturbanceRecording>();
 
@@ -103,7 +107,7 @@ namespace Ordos.Core.Utilities
             {
                 Logger.Trace($"Device Id: {deviceId} - drName: {drFileGroup.Key}");
 
-                var dr = new DisturbanceRecording { DeviceId = deviceId };
+                var dr = new DisturbanceRecording {DeviceId = deviceId};
 
                 //Parse DR Group:
                 var drFiles = ParseDRFilesGroup(drFileGroup);
@@ -124,6 +128,7 @@ namespace Ordos.Core.Utilities
                     disturbanceRecordings.Add(dr);
                 }
             }
+
             return disturbanceRecordings;
         }
 
@@ -137,14 +142,14 @@ namespace Ordos.Core.Utilities
             //Fallback DateTime
             var creationTime = DateTime.Now;
 
-            foreach (var zipFileEntry in zippedFiles.Where(x=>x.Name.IsPartOfDisturbanceRecording()))
+            foreach (var zipFileEntry in zippedFiles.Where(x => x.Name.IsPartOfDisturbanceRecording()))
             {
                 Logger.Trace($"{zipFileEntry.Name}");
 
                 //Add filedata to the DRFile;
                 var fileData = Array.Empty<byte>();
                 var triggerDate = DateTime.Now;
-                using (MemoryStream ms = new MemoryStream())
+                using (var ms = new MemoryStream())
                 {
                     zipFileEntry.Open().CopyTo(ms);
                     fileData = ms.ToArray();
@@ -164,13 +169,14 @@ namespace Ordos.Core.Utilities
                     FileSize = zipFileEntry.Length,
                     //DisturbanceRecordingId = dr.Id,
                     CreationTime = creationTime,
-                    FileData = fileData,
+                    FileData = fileData
                 };
 
                 Logger.Trace($"{drFile}");
 
                 list.Add(drFile);
             }
+
             return list;
         }
 
@@ -193,9 +199,7 @@ namespace Ordos.Core.Utilities
 
                 //Only the CFG files contain TriggerTime;
                 if (fileInfo.Name.IsExtension(FileNameExtensions.CFGExtension))
-                {
                     creationTime = GetTriggerDateTime(fileInfo.FullName);
-                }
 
                 //Init the DRFile;
                 var drFile = new DRFile
@@ -204,13 +208,14 @@ namespace Ordos.Core.Utilities
                     FileSize = fileInfo.Length,
                     //DisturbanceRecordingId = dr.Id,
                     CreationTime = creationTime,
-                    FileData = fileData,
+                    FileData = fileData
                 };
 
                 Logger.Trace($"{drFile}");
 
                 list.Add(drFile);
             }
+
             return list;
         }
 
@@ -234,6 +239,7 @@ namespace Ordos.Core.Utilities
                 if (tryParse)
                     res.Add(result);
             }
+
             if (res.Count.Equals(0))
                 res.Add(DateTime.Now);
             return res;
@@ -241,7 +247,7 @@ namespace Ordos.Core.Utilities
 
         public static IEnumerable<DateTime> GetDRDateTimes(string cfgFilename)
         {
-            return GetDRDateTimes(System.IO.File.ReadAllLines(cfgFilename));
+            return GetDRDateTimes(File.ReadAllLines(cfgFilename));
         }
 
         public static IEnumerable<string> ReadLines(Stream stream, Encoding encoding)
@@ -249,10 +255,7 @@ namespace Ordos.Core.Utilities
             using (var reader = new StreamReader(stream, encoding))
             {
                 string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    yield return line;
-                }
+                while ((line = reader.ReadLine()) != null) yield return line;
             }
         }
     }

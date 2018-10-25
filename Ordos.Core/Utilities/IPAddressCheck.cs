@@ -1,7 +1,7 @@
-﻿using Ordos.Core.Models;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using Ordos.Core.Models;
 
 namespace Ordos.Core.Utilities
 {
@@ -14,10 +14,9 @@ namespace Ordos.Core.Utilities
 
             var ipAddress = model.IPAddress;
 
-            var result = IPAddress.TryParse(ipAddress, out var _);
+            var result = IPAddress.TryParse(ipAddress, out _);
 
             return result ? ValidationResult.Success : new ValidationResult("Not a valid IP Address");
         }
-
     }
 }

@@ -7,8 +7,8 @@ namespace Ordos.Core.Utilities
 {
     public static class FileNameExtensions
     {
-        private static readonly string[] DownloadableFromDevice = { ".zip", ".cfg", ".dat", ".hdr", ".cff" };
-        private static readonly string[] PartsOfDisturbanceRecord = { ".cfg", ".dat", ".hdr" };
+        private static readonly string[] DownloadableFromDevice = {".zip", ".cfg", ".dat", ".hdr", ".cff"};
+        private static readonly string[] PartsOfDisturbanceRecord = {".cfg", ".dat", ".hdr"};
 
         public static string CFGExtension { get; } = ".CFG";
 

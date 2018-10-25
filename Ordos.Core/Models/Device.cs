@@ -1,7 +1,7 @@
-﻿using Ordos.Core.Utilities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Ordos.Core.Utilities;
 
 namespace Ordos.Core.Models
 {
@@ -12,17 +12,15 @@ namespace Ordos.Core.Models
             DisturbanceRecordings = new List<DisturbanceRecording>();
         }
 
-        [Key]
-        public int Id { get; set; }
+        [Key] public int Id { get; set; }
 
         //public int DeviceTypeId { get; set; }
 
-        [Display(Name = "Tipo de IED")]
-        public string DeviceType { get; set; }
+        [Display(Name = "Tipo de IED")] public string DeviceType { get; set; }
 
         /// <summary>
-        /// List of all the DRs that the IED have.
-        /// Each DR can contain multiple IEDFiles.
+        ///     List of all the DRs that the IED have.
+        ///     Each DR can contain multiple IEDFiles.
         /// </summary>
         [Display(Name = "Oscilografias")]
         public ICollection<DisturbanceRecording> DisturbanceRecordings { get; set; }
@@ -42,25 +40,21 @@ namespace Ordos.Core.Models
         [Display(Name = "Estación")]
         public string Station { get; set; }
 
-        [Required]
-        [Display(Name = "Bahía")]
-        public string Bay { get; set; }
+        [Required] [Display(Name = "Bahía")] public string Bay { get; set; }
 
         [Required]
         [Display(Name = "Nemotécnico Bahía")]
         public string BayId { get; set; }
 
-        [Display(Name = "Estado")]
-        public bool IsConnected { get; set; }
+        [Display(Name = "Estado")] public bool IsConnected { get; set; }
 
-        [Display(Name = "Ping")]
-        public bool HasPing { get; set; }
+        [Display(Name = "Ping")] public bool HasPing { get; set; }
 
-        [NotMapped]
-        [Display(Name = "IED")]
-        public string FullName => $"{Station} - {Bay} - {Name}";
+        [NotMapped] [Display(Name = "IED")] public string FullName => $"{Station} - {Bay} - {Name}";
 
-        public override string ToString() => FullName;
+        public override string ToString()
+        {
+            return FullName;
+        }
     }
 }
-

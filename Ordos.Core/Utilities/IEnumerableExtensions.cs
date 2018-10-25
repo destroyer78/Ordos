@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Ordos.Core.Utilities
 {
@@ -8,10 +6,7 @@ namespace Ordos.Core.Utilities
     {
         public static void AddRange<T>(this ICollection<T> inputList, IEnumerable<T> range)
         {
-            foreach (var item in range)
-            {
-                inputList.Add(item);
-            }
+            foreach (var item in range) inputList.Add(item);
         }
     }
 }
