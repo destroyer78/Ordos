@@ -57,7 +57,6 @@ namespace Ordos.Core.Utilities
         public static string CleanFileName(this string fileName)
         {
             return Regex.Replace(fileName, "[^a-zA-Z0-9_.]+", string.Empty, RegexOptions.Compiled);
-            // return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
         }
     }
 }
