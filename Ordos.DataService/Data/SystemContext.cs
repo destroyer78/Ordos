@@ -1,5 +1,6 @@
 ﻿using Ordos.Core.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Ordos.DataService.Data
 {
@@ -9,7 +10,9 @@ namespace Ordos.DataService.Data
         public static string SQLExpressConnectionString =>
             "Server=(localdb)\\mssqllocaldb;Database=Ordos;ConnectRetryCount=0;Trusted_Connection=True;MultipleActiveResultSets=true";
 
-        public SystemContext()
+        public static Guid guid=new Guid();
+
+                public SystemContext()
         {
         }
 
@@ -24,8 +27,11 @@ namespace Ordos.DataService.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+
             if (!optionsBuilder.IsConfigured)
-                optionsBuilder.UseSqlServer(SQLExpressConnectionString);
+                optionsBuilder.UseInMemoryDatabase(guid.ToString());
+
+            // optionsBuilder.UseSqlServer(SQLExpressConnectionString);
         }
     }
 }

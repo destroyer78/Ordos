@@ -22,7 +22,7 @@ namespace DRM.Pages_Settings
 
         public void OnGetAsync()
         {
-            CompanyName = _context.ConfigurationValues.FirstOrDefault(x => x.Id.Contains(DatabaseService.CompanyNameLabel)).Value;
+            CompanyName = _context.ConfigurationValues?.FirstOrDefault(x => x.Id.Contains(DatabaseService.CompanyNameLabel))?.Value;
         }
 
         public async Task<IActionResult> OnPostAsync()
