@@ -8,13 +8,41 @@ services:
     image: ordos-app:demo
     networks:
       - app_nw
+      - db_nw
     ports:
       - "51084:51084"
     volumes:
       - ./:/app
     command: ["dotnet", "run", "-p", "Ordos.Server/Ordos.Server.csproj"]
+  db:
+    image: postgres:10
+    restart: always
+    volumes: 
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      db_nw:
+        aliases:
+          - postgres
+    environment:
+      POSTGRES_PASSWORD: changeme
+   db_testing:
+    image: postgres:10
+    restart: always
+    networks:
+      db_testing_nw:
+        aliases:
+          - postgres_testing
+    environment:
+      POSTGRES_PASSWORD: changeme
 
 
 networks:
   app_nw:
     driver: bridge
+  db_nw:
+    driver: bridge
+  db_testing_nw:
+    driver: bridge
+
+volumes:
+  pgdata:
