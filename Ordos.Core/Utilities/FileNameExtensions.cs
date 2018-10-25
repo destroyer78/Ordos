@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Ordos.Core.Utilities
 {
@@ -40,7 +41,7 @@ namespace Ordos.Core.Utilities
 
         public static bool IsDirectory(this string filename)
         {
-            return filename.EndsWith(Path.DirectorySeparatorChar.ToString()) || filename.EndsWith(Path.AltDirectorySeparatorChar.ToString());
+            return filename.EndsWith(@"\") || filename.EndsWith(@"/");
         }
 
         public static string GetNameWithoutExtension(this string filename)
@@ -55,7 +56,8 @@ namespace Ordos.Core.Utilities
 
         public static string CleanFileName(this string fileName)
         {
-            return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
+            return Regex.Replace(fileName, "[^a-zA-Z0-9_.]+", string.Empty, RegexOptions.Compiled);
+            // return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
         }
     }
 }
