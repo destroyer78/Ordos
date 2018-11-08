@@ -54,5 +54,22 @@ Cualquier duda o comentario, pueden [crear un Issue](https://help.github.com/art
 
 ## Dependencias
 Este proyecto utiliza las siguientes dependencias: 
-- [libiec61850](https://github.com/mz-automation/libiec61850) 
+- [.Net Core](https://github.com/dotnet/core)
+- [ASP.NET Entity Framework Core](https://github.com/aspnet/EntityFrameworkCore)
+- [libiec61850](https://github.com/mz-automation/libiec61850)
 - [Fluent Scheduler](https://github.com/fluentscheduler/FluentScheduler)
+- [PostgreSQL](https://github.com/postgres/postgres)
+- [NLog](https://github.com/NLog/NLog)
+- [xUnit](https://github.com/xunit/xunit)
+
+## Licenciamiento
+Este proyecto está bajo la licencia [GNU v3.0](https://github.com/gabrieldelaparra/Ordos/blob/master/LICENSE.MD)
+
+Las dependencias ocupadas tienen las siguientes licencias:
+- [.Net Core](https://github.com/dotnet/core/blob/master/LICENSE.TXT): MIT
+- [ASP.NET Entity Framework Core](https://github.com/aspnet/EntityFrameworkCore/blob/master/LICENSE.txt): Apache License 2.0
+- [libiec61850](https://github.com/mz-automation/libiec61850/blob/v1.3/COPYING): GPL-3.0
+- [Fluent Scheduler](https://github.com/fluentscheduler/FluentScheduler/blob/master/LICENSE): BSD
+- [PostgreSQL](https://github.com/postgres/postgres/blob/master/COPYRIGHT): PostgreSQL License
+- [NLog](https://github.com/NLog/NLog/blob/dev/LICENSE.txt): BSD 3-Clause "New" or "Revised" License
+- [xUnit](https://github.com/xunit/xunit/blob/master/license.txt): Apache License 2.0
