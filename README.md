@@ -63,13 +63,13 @@ Este proyecto utiliza las siguientes dependencias:
 - [xUnit](https://github.com/xunit/xunit)
 
 ## Licenciamiento
-Este proyecto está bajo la licencia [GNU v3.0](https://github.com/gabrieldelaparra/Ordos/blob/master/LICENSE.MD)
+Este proyecto está bajo la licencia [GNU General Public License Version 3](https://github.com/gabrieldelaparra/Ordos/blob/master/LICENSE.MD)
 
 Las dependencias ocupadas tienen las siguientes licencias:
-- [.Net Core](https://github.com/dotnet/core/blob/master/LICENSE.TXT): MIT
+- [.Net Core](https://github.com/dotnet/core/blob/master/LICENSE.TXT): MIT License
 - [ASP.NET Entity Framework Core](https://github.com/aspnet/EntityFrameworkCore/blob/master/LICENSE.txt): Apache License 2.0
-- [libiec61850](https://github.com/mz-automation/libiec61850/blob/v1.3/COPYING): GPL-3.0
-- [Fluent Scheduler](https://github.com/fluentscheduler/FluentScheduler/blob/master/LICENSE): BSD
+- [libiec61850](https://github.com/mz-automation/libiec61850/blob/v1.3/COPYING): GNU General Public License Version 3
+- [Fluent Scheduler](https://github.com/fluentscheduler/FluentScheduler/blob/master/LICENSE): BSD 3-Clause "New" or "Revised" License
 - [PostgreSQL](https://github.com/postgres/postgres/blob/master/COPYRIGHT): PostgreSQL License
 - [NLog](https://github.com/NLog/NLog/blob/dev/LICENSE.txt): BSD 3-Clause "New" or "Revised" License
 - [xUnit](https://github.com/xunit/xunit/blob/master/license.txt): Apache License 2.0
