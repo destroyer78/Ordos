@@ -11,7 +11,7 @@ namespace Ordos.DataService.Data
             "Server=(localdb)\\mssqllocaldb;Database=Ordos;ConnectRetryCount=0;Trusted_Connection=True;MultipleActiveResultSets=true";
 
         public static string PSQLConnectionString =>
-            "Host=172.17.0.2;Port=5432;Username=postgres;Password=1234;Database=postgres;";
+            "Host=postgres;Port=5432;Username=postgres;Password=changeme;Database=postgres;";
 
 
         public static Guid guid = new Guid();
@@ -32,9 +32,9 @@ namespace Ordos.DataService.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
-                //optionsBuilder.UseNpgsql(PSQLConnectionString);
+                optionsBuilder.UseNpgsql(PSQLConnectionString);
                 // optionsBuilder.UseSqlServer(SQLExpressConnectionString);
-                optionsBuilder.UseInMemoryDatabase(guid.ToString());
+                // optionsBuilder.UseInMemoryDatabase(guid.ToString());
         }
     }
 }

@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: ordos:demo
+    ports:
+      - "51084:51084"
+    networks:
+      db_nw:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    depends_on: 
+      - db
+    # env_file: ".env.app_settings"
+  db:
+    image: postgres:10
+    restart: always
+    ports:
+      - "51085:5432"
+    volumes: 
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      db_nw:
+        aliases:
+          - postgres
+    environment:
+      POSTGRES_PASSWORD: changeme
+networks:
+  db_nw:
+    driver: bridge
+
+volumes:
+  pgdata:
