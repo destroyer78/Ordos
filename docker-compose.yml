@@ -12,6 +12,7 @@ services:
       db_nw:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      ORDOS_CONNECTION_STRING: Host=postgres;Port=5432;Username=postgres;Password=changeme;Database=postgres;
     depends_on: 
       - db
   db:
@@ -26,7 +27,7 @@ services:
         aliases:
           - postgres
     environment:
-      POSTGRES_PASSWORD: password1
+      POSTGRES_PASSWORD: changeme
 networks:
   db_nw:
     driver: bridge

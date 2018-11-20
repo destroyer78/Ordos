@@ -4,7 +4,8 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ORDOS_CONNECTION_STRING": "Host=localhost;Port=5432;Username=postgres;Password=password1;Database=postgres;"
       },
       "applicationUrl": "http://localhost:51084/"
     },
@@ -12,7 +13,8 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ORDOS_CONNECTION_STRING": "Host=0.0.0.0;Port=5432;Username=postgres;Password=password1;Database=postgres;"
       },
       "applicationUrl": "http://0.0.0.0:51084/"
     },
