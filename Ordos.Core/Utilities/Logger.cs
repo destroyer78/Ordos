@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using System.IO;
+using NLog;
 using NLog.Config;
 using NLog.Layouts;
 using NLog.Targets;
@@ -12,11 +13,12 @@ namespace Ordos.Core.Utilities
             var config = new LoggingConfiguration();
 
             config.Variables.Add("logDirectory", Paths.ExportRoot);
+            config.Variables.Add("directorySeparator", Path.DirectorySeparatorChar.ToString());
 
             var fileTarget = new FileTarget
             {
                 Name = "logfile",
-                FileName = @"${var:logDirectory}\Logs\Log ${date:format=yyyy-MM-dd}.log",
+                FileName = @"${var:logDirectory}${var:directorySeparator}Logs${var:directorySeparator}Log ${date:format=yyyy-MM-dd}.log",
                 Layout = new CsvLayout
                 {
                     Columns =
