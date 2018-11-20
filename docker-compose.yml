@@ -8,6 +8,8 @@ services:
     image: ordos:server
     ports:
       - "51084:51084"
+    volumes: 
+      - ./Ordos:/app/Ordos
     networks:
       db_nw:
     environment:
