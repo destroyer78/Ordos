@@ -38,10 +38,6 @@ docker-compose -f "docker-compose.yml" up -d --build
 
 # Instalación: Source
 
-## ! Las instrucciones son validas para el [Release v1.1](https://github.com/gabrieldelaparra/Ordos/releases/tag/v1.1). Actualmente se está migrando a un proceso más simplificado, basado en Docker.
-
-## Instrucciones
-
 ### 1. Descargar e instalar [.Net Core](https://www.microsoft.com/net/download) (x64).
 
 ### 2. Descargar e Instalar [PostgreSQL](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) (x64)
