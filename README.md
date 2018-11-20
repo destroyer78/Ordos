@@ -1,7 +1,7 @@
 # Ordos
 Ordos: Comtrade Manager para cumplimiento del Sistema de Lectura Remota de Protecciones del Coordinador Eléctrico Nacional de Chile.
 
-## Dependencias
+# Dependencias
 Este proyecto utiliza las siguientes dependencias: 
 - [.Net Core](https://github.com/dotnet/core)
 - [ASP.NET Entity Framework Core](https://github.com/aspnet/EntityFrameworkCore)
@@ -13,7 +13,7 @@ Este proyecto utiliza las siguientes dependencias:
 
 Todas estas dependencias se resuelven automáticamente por NuGet. (`dotnet restore`)
 
-## Licenciamiento
+# Licenciamiento
 Este proyecto está bajo la licencia [GNU General Public License Version 3](https://github.com/gabrieldelaparra/Ordos/blob/master/LICENSE.MD)
 
 Las dependencias ocupadas tienen las siguientes licencias:
@@ -26,56 +26,39 @@ Las dependencias ocupadas tienen las siguientes licencias:
 - [xUnit](https://github.com/xunit/xunit/blob/master/license.txt): Apache License 2.0
 
 
-## Contribuciones o dudas
+# Contribuciones o dudas
 Cualquier duda o comentario, pueden [crear un Issue](https://help.github.com/articles/creating-an-issue/).
+
+# Instalación: Docker
+```
+git clone https://github.com/gabrieldelaparra/Ordos.git
+cd Ordos
+docker-compose -f "docker-compose.yml" up -d --build
+```
+
+# Instalación: Source
 
 ## ! Las instrucciones son validas para el [Release v1.1](https://github.com/gabrieldelaparra/Ordos/releases/tag/v1.1). Actualmente se está migrando a un proceso más simplificado, basado en Docker.
 
 ## Instrucciones
 
-### 1. Descargar e instalar [.Net Core](https://www.microsoft.com/net/download) (x86 o x64).
+### 1. Descargar e instalar [.Net Core](https://www.microsoft.com/net/download) (x64).
 
-En el sitio, hacer click sobre la versión que corresponda:<br />
-<kbd>
-  <img src="Assets/Images/NetCore1.PNG" alt="Net Core Download Step 1" />
-</kbd>
+### 2. Descargar e Instalar [PostgreSQL](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) (x64)
 
-### 2. Instalar [SQL Server Express 2014 - LocalDb](https://www.microsoft.com/en-us/download/details.aspx?id=42299) (x86 o x64)
+La contraseña que se coloque, debe setearse en el `launchsettings.json`.
 
-Hacer click sobre el botón de descargar:<br />
-<kbd>
-  <img src="Assets/Images/SQL1.PNG" alt="SQL Download Step 1" />
-</kbd>
-
-Seleccionar la versión que corresponda:<br />
-<kbd>
-  <img src="Assets/Images/SQL2.PNG" alt="SQL Download Step 2" />
-</kbd>
-
-### 3. [Clonar](https://help.github.com/articles/cloning-a-repository/) o [descargar](https://github.com/gabrieldelaparra/Ordos/archive/master.zip) el repositorio.
-
-Clonar o descargar:<br />
-<kbd>
-  <img src="Assets/Images/Github1.PNG" alt="Repo Step 1" />
-</kbd>
+### 3. [Clonar](https://help.github.com/articles/cloning-a-repository/) el repositorio.
 
 ### 4. Entrar a la carpeta `Ordos` (en la consola: `cd Ordos`)
 
-### 5. En la consola, ejecutar `build`
+### 5. En la consola, ejecutar `dotnet build`
 
-Build:<br />
-<kbd>
-  <img src="Assets/Images/Build1.PNG" alt="Build progress" />
-</kbd>
+### 6. En la consola, ejecutar `dotnet run -p Ordos.Server --launch-profile WindowsDev|LinuxDev`
 
-### 6. En la consola, ejecutar `ordos`
+### 7. Agregar IEDs.
 
-Run:<br />
-<kbd>
-  <img src="Assets/Images/Run1.PNG" alt="Run messages" />
-</kbd>
-
-Las oscilografías se extraen a la carpeta `.\Ordos\` según los requerimientos del SLRP.
+Las oscilografías se extraen a la carpeta `./Ordos/` con los archivos estructurados según los requerimientos del SLRP.
 
 
 
