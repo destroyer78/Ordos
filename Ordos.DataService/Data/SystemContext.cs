@@ -1,14 +1,25 @@
 ﻿using Ordos.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Microsoft.Extensions.Configuration;
 
 namespace Ordos.DataService.Data
 {
     public class SystemContext : DbContext
     {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-        public static string PSQLConnectionString =>
-            "Host=localhost;Port=5432;Username=postgres;Password=password1;Database=postgres;";
+        public static string PSQLConnectionString
+        {
+            get
+            {
+                var config = new ConfigurationBuilder()
+                    .SetBasePath(System.AppContext.BaseDirectory)
+                    .AddJsonFile("appsettings.json")
+                    .Build();
+
+                return config["ConnectionStrings:PostgreSQLConnectionString"];
+            }
+        }
 
 
         public static Guid guid = new Guid();
@@ -30,7 +41,7 @@ namespace Ordos.DataService.Data
         {
             if (!optionsBuilder.IsConfigured)
                 optionsBuilder.UseNpgsql(PSQLConnectionString);
-                // optionsBuilder.UseInMemoryDatabase(guid.ToString());
+            // optionsBuilder.UseInMemoryDatabase(guid.ToString());
         }
     }
 }

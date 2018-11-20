@@ -75,7 +75,7 @@ Run:<br />
   <img src="Assets/Images/Run1.PNG" alt="Run messages" />
 </kbd>
 
-Las oscilografías se extraen a la carpeta `C:\Ordos\` según los requerimientos del SLRP.
+Las oscilografías se extraen a la carpeta `.\Ordos\` según los requerimientos del SLRP.
 
 
 

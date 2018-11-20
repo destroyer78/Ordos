@@ -17,4 +17,4 @@ RUN dotnet publish "Ordos.Server.csproj" -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "Ordos.Server.dll"]
+ENTRYPOINT ["dotnet", "Ordos.Server.dll", "launch-profile", "ProductionDocker"]

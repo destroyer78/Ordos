@@ -5,7 +5,7 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
-    image: ordos:demo
+    image: ordos:server
     ports:
       - "51084:51084"
     networks:
@@ -26,7 +26,7 @@ services:
         aliases:
           - postgres
     environment:
-      POSTGRES_PASSWORD: changeme
+      POSTGRES_PASSWORD: password1
 networks:
   db_nw:
     driver: bridge
