@@ -11,8 +11,9 @@ namespace Ordos.Core
         {
             get
             {
-                var rootDrive = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                return Path.Combine(rootDrive, DRMFolder);
+                // var rootFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                var rootFolder = System.IO.Directory.GetCurrentDirectory();
+                return Path.Combine(rootFolder, DRMFolder);
             }
         }
     }
