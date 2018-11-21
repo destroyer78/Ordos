@@ -30,9 +30,21 @@ Las dependencias ocupadas tienen las siguientes licencias:
 Cualquier duda o comentario, pueden [crear un Issue](https://help.github.com/articles/creating-an-issue/).
 
 # Instalación: Docker
+## Requisitos:
+- git
+- Docker
+
+## Descargar el repositorio
 ```
 git clone https://github.com/gabrieldelaparra/Ordos.git
 cd Ordos
+```
+## Correr los tests (Opcional, pero recomendado)
+```
+docker-compose -f "docker-compose.test.yml" up --build
+```
+## Ejecutar la aplicación
+```
 docker-compose -f "docker-compose.yml" up -d --build
 ```
 
