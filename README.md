@@ -34,7 +34,7 @@ Cualquier duda o comentario, pueden [crear un Issue](https://help.github.com/art
 - git
 - Docker
 
-### Descargar el repositorio
+### Clonar el repositorio
 ```
 git clone https://github.com/gabrieldelaparra/Ordos.git
 cd Ordos
@@ -50,23 +50,32 @@ docker-compose -f "docker-compose.yml" up -d --build
 
 # Instalación: Source
 
-### 1. Descargar e instalar [.Net Core](https://www.microsoft.com/net/download) (x64).
+### Requisitos
+- Descargar e instalar [.Net Core](https://www.microsoft.com/net/download) (x64).
+- Descargar e Instalar [PostgreSQL](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) (x64)
+> La contraseña que se coloque, debe setearse en el `launchsettings.json`.
 
-### 2. Descargar e Instalar [PostgreSQL](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads) (x64)
-
-La contraseña que se coloque, debe setearse en el `launchsettings.json`.
-
-### 3. [Clonar](https://help.github.com/articles/cloning-a-repository/) el repositorio.
-
-### 4. Entrar a la carpeta `Ordos` (en la consola: `cd Ordos`)
-
-### 5. En la consola, ejecutar `dotnet build`
-
-### 6. En la consola, ejecutar `dotnet run -p Ordos.Server --launch-profile WindowsDev|LinuxDev`
-
-### 7. Agregar IEDs.
-
-Las oscilografías se extraen a la carpeta `./Ordos/` con los archivos estructurados según los requerimientos del SLRP.
-
-
-
+### Clonar el repositorio
+```
+git clone https://github.com/gabrieldelaparra/Ordos.git
+cd Ordos
+```
+### Build
+```
+dotnet build
+```
+### Correr los tests (Opcional, pero recomendado)
+```
+dotnet test Ordos.Tests
+```
+###  Ejecutar la aplicación 
+#### Windows
+```
+dotnet run -p Ordos.Server --launch-profile WindowsDev
+```
+#### Linux
+```
+dotnet run -p Ordos.Server --launch-profile LinuxDev
+```
+Luego, setear el nombre de la compañía y agregar los IEDs.
+> Las oscilografías se extraen a la carpeta `./Ordos/` con los archivos estructurados según los requerimientos del SLRP.
