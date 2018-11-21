@@ -9,14 +9,27 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="bcryptprimitives.dll" />
+    <None Remove="cfgmgr32.dll" />
+    <None Remove="cryptbase.dll" />
+    <None Remove="devobj.dll" />
+    <None Remove="devrtl.dll" />
+    <None Remove="dhcpcsvc.dll" />
+    <None Remove="dhcpcsvc6.dll" />
+    <None Remove="dnsapi.dll" />
     <None Remove="iec61850.dll" />
+    <None Remove="iec61850.so" />
+    <None Remove="IPHLPAPI.DLL" />
     <None Remove="kernel32.dll" />
     <None Remove="KernelBase.dll" />
+    <None Remove="nsi.dll" />
     <None Remove="ntdll.dll" />
     <None Remove="rpcrt4.dll" />
+    <None Remove="sspicli.dll" />
     <None Remove="ucrtbase.dll" />
     <None Remove="ucrtbased.dll" />
     <None Remove="vcruntime140d.dll" />
+    <None Remove="winnsi.dll" />
     <None Remove="ws2_32.dll" />
   </ItemGroup>
 
@@ -24,16 +37,7 @@
     <Content Include="iec61850.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="kernel32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="KernelBase.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ntdll.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="rpcrt4.dll">
+    <Content Include="iec61850.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="ucrtbase.dll">
@@ -43,9 +47,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="vcruntime140d.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ws2_32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
